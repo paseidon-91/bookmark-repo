@@ -1,0 +1,50 @@
+
+entity Profile {
+	profileName String,
+    userId Long,
+    isDefault Boolean
+}
+
+entity Category {
+	categoryName String
+}
+
+enum ItemType {
+	LINK, FILE, LONG_TEXT
+}
+
+entity Item {
+	title String,
+    description String,
+    type ItemType,
+    content String
+}
+
+entity Tag {
+	tag String
+}
+
+relationship OneToMany {
+	Profile to Item{profile},
+	Category to Item{categoru}
+}
+
+relationship ManyToOne {
+	Category{parent} to Category
+}
+
+relationship ManyToMany {
+	Item{tag(tag)} to Tag{tag}
+}
+
+// Set pagination options
+paginate Profile, Category, Item, Tag with infinite-scroll
+
+// Use Data Transfer Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
