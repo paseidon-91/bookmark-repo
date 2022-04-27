@@ -1,0 +1,27 @@
+{
+  "bookmarkApp": {
+    "profile": {
+      "home": {
+        "title": "Profiles",
+        "refreshListLabel": "Обновить список",
+        "createLabel": "Создать новый Profile",
+        "createOrEditLabel": "Создать или отредактировать Profile",
+        "notFound": "Profiles не найдено"
+      },
+      "created": "Новый Profile создан с идентификатором {{ param }}",
+      "updated": "Profile обновлен с идентификатором {{ param }}",
+      "deleted": "Profile удален с идентификатором {{ param }}",
+      "delete": {
+        "question": "Вы уверены что хотите удалить Profile {{ id }}?"
+      },
+      "detail": {
+        "title": "Profile"
+      },
+      "id": "ID",
+      "profileName": "Profile Name",
+      "userId": "User Id",
+      "isDefault": "Is Default",
+      "item": "Item"
+    }
+  }
+}

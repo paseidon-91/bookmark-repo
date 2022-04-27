@@ -1,0 +1,30 @@
+{
+  "bookmarkApp": {
+    "item": {
+      "home": {
+        "title": "Items",
+        "refreshListLabel": "Обновить список",
+        "createLabel": "Создать новый Item",
+        "createOrEditLabel": "Создать или отредактировать Item",
+        "notFound": "Items не найдено"
+      },
+      "created": "Новый Item создан с идентификатором {{ param }}",
+      "updated": "Item обновлен с идентификатором {{ param }}",
+      "deleted": "Item удален с идентификатором {{ param }}",
+      "delete": {
+        "question": "Вы уверены что хотите удалить Item {{ id }}?"
+      },
+      "detail": {
+        "title": "Item"
+      },
+      "id": "ID",
+      "title": "Title",
+      "description": "Description",
+      "type": "Type",
+      "content": "Content",
+      "tag": "Tag",
+      "profile": "Profile",
+      "categoru": "Categoru"
+    }
+  }
+}
