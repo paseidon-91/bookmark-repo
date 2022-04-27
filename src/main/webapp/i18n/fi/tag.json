@@ -1,0 +1,25 @@
+{
+  "bookmarkApp": {
+    "tag": {
+      "home": {
+        "title": "Tags",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Luo Tag",
+        "createOrEditLabel": "Luo tai muokkaa Tag",
+        "notFound": "Tag ei löytynyt"
+      },
+      "created": "Uusi Tag on luotu, id: {{ param }}",
+      "updated": "Tag on päivitetty, id: {{ param }}",
+      "deleted": "Tag on päivitetty, id: {{ param }}",
+      "delete": {
+        "question": "Haluatko varmasti poistaa Tag {{ id }}?"
+      },
+      "detail": {
+        "title": "Tag"
+      },
+      "id": "ID",
+      "tag": "Tag",
+      "tag": "Tag"
+    }
+  }
+}

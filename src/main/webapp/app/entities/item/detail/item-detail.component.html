@@ -1,0 +1,63 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="item">
+      <h2 data-cy="itemDetailsHeading"><span jhiTranslate="bookmarkApp.item.detail.title">Item</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ item.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookmarkApp.item.title">Title</span></dt>
+        <dd>
+          <span>{{ item.title }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookmarkApp.item.description">Description</span></dt>
+        <dd>
+          <span>{{ item.description }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookmarkApp.item.type">Type</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'bookmarkApp.ItemType.' + item.type }}">{{ item.type }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookmarkApp.item.content">Content</span></dt>
+        <dd>
+          <span>{{ item.content }}</span>
+        </dd>
+        <dt><span jhiTranslate="bookmarkApp.item.tag">Tag</span></dt>
+        <dd>
+          <span *ngFor="let tag of item.tags; let last = last">
+            <a [routerLink]="['/tag', tag?.id, 'view']">{{ tag.tag }}</a
+            >{{ last ? '' : ', ' }}
+          </span>
+        </dd>
+        <dt><span jhiTranslate="bookmarkApp.item.profile">Profile</span></dt>
+        <dd>
+          <div *ngIf="item.profile">
+            <a [routerLink]="['/profile', item.profile?.id, 'view']">{{ item.profile?.id }}</a>
+          </div>
+        </dd>
+        <dt><span jhiTranslate="bookmarkApp.item.categoru">Categoru</span></dt>
+        <dd>
+          <div *ngIf="item.categoru">
+            <a [routerLink]="['/category', item.categoru?.id, 'view']">{{ item.categoru?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/item', item.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

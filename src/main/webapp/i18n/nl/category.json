@@ -1,0 +1,26 @@
+{
+  "bookmarkApp": {
+    "category": {
+      "home": {
+        "title": "Categories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Maak een nieuwe Category",
+        "createOrEditLabel": "Maak of wijzig een Category",
+        "notFound": "No Categories found"
+      },
+      "created": "A new Category is created with identifier {{ param }}",
+      "updated": "A Category is updated with identifier {{ param }}",
+      "deleted": "A Category is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Bent u zeker dat u Category {{ id }} wilt verwijderen?"
+      },
+      "detail": {
+        "title": "Category"
+      },
+      "id": "ID",
+      "categoryName": "Category Name",
+      "item": "Item",
+      "parent": "Parent"
+    }
+  }
+}

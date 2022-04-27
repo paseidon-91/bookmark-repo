@@ -1,0 +1,27 @@
+{
+  "bookmarkApp": {
+    "profile": {
+      "home": {
+        "title": "Profiles",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Maak een nieuwe Profile",
+        "createOrEditLabel": "Maak of wijzig een Profile",
+        "notFound": "No Profiles found"
+      },
+      "created": "A new Profile is created with identifier {{ param }}",
+      "updated": "A Profile is updated with identifier {{ param }}",
+      "deleted": "A Profile is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Bent u zeker dat u Profile {{ id }} wilt verwijderen?"
+      },
+      "detail": {
+        "title": "Profile"
+      },
+      "id": "ID",
+      "profileName": "Profile Name",
+      "userId": "User Id",
+      "isDefault": "Is Default",
+      "item": "Item"
+    }
+  }
+}

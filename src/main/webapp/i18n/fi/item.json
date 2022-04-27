@@ -1,0 +1,30 @@
+{
+  "bookmarkApp": {
+    "item": {
+      "home": {
+        "title": "Items",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Luo Item",
+        "createOrEditLabel": "Luo tai muokkaa Item",
+        "notFound": "Item ei löytynyt"
+      },
+      "created": "Uusi Item on luotu, id: {{ param }}",
+      "updated": "Item on päivitetty, id: {{ param }}",
+      "deleted": "Item on päivitetty, id: {{ param }}",
+      "delete": {
+        "question": "Haluatko varmasti poistaa Item {{ id }}?"
+      },
+      "detail": {
+        "title": "Item"
+      },
+      "id": "ID",
+      "title": "Title",
+      "description": "Description",
+      "type": "Type",
+      "content": "Content",
+      "tag": "Tag",
+      "profile": "Profile",
+      "categoru": "Categoru"
+    }
+  }
+}
