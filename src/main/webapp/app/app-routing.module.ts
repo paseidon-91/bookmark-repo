@@ -25,6 +25,10 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           loadChildren: () => import('./account/account.module').then(m => m.AccountModule),
         },
         {
+          path: 'bookmarks',
+          loadChildren: () => import('./bookmarks/bookmarks.module').then(m => m.BookmarksModule),
+        },
+        {
           path: 'login',
           loadChildren: () => import('./login/login.module').then(m => m.LoginModule),
         },

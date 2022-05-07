@@ -33,6 +33,19 @@ public class Profile implements Serializable {
     @Column(name = "is_default")
     private Boolean isDefault;
 
+    // TODO добавить версионирование
+    //    @Version
+    //    @Column(name = "version")
+    //    private int version;
+    //
+    //    public int getVersion() {
+    //        return version;
+    //    }
+    //
+    //    public void setVersion(int version) {
+    //        this.version = version;
+    //    }
+
     @OneToMany(mappedBy = "profile")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "tags", "profile", "categoru" }, allowSetters = true)

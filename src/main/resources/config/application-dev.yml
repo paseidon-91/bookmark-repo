@@ -32,17 +32,22 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/bookmark
-    username: bookmark
-    password:
+    url: jdbc:postgresql://localhost:5432/bookmark_dev
+    username: developer
+    password: developer
     hikari:
       poolName: Hikari
       auto-commit: false
   jpa:
     database-platform: tech.jhipster.domain.util.FixedPostgreSQL10Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: bookmark
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev, faker
+    default-schema: bookmark
   mail:
     host: localhost
     port: 25

@@ -27,6 +27,19 @@ public class Category implements Serializable {
     @Column(name = "category_name")
     private String categoryName;
 
+    // TODO добавить версионирование
+    //    @Version
+    //    @Column(name = "version")
+    //    private int version;
+    //
+    //    public int getVersion() {
+    //        return version;
+    //    }
+    //
+    //    public void setVersion(int version) {
+    //        this.version = version;
+    //    }
+
     @OneToMany(mappedBy = "categoru")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "tags", "profile", "categoru" }, allowSetters = true)

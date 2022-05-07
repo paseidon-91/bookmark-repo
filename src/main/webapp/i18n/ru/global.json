@@ -4,6 +4,7 @@
     "browsehappy": "Ваш браузер <strong>устарел</strong>. Пожалуйста <a href=\"http://browsehappy.com/?locale=ru\">обновите ваш браузер</a>.",
     "menu": {
       "home": "Главная",
+      "bookmarks": "Закладки",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Сущности",
@@ -87,7 +88,7 @@
       "id": "ID"
     },
     "ribbon": {
-      "dev": "Разработка"
+      "dev": "Разработка!"
     },
     "item-count": "Показываем {{first}} - {{second}} из {{total}}."
   },
