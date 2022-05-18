@@ -33,7 +33,7 @@
               [ngValue]="categoryOption.id === editForm.get('parent')!.value?.id ? editForm.get('parent')!.value : categoryOption"
               *ngFor="let categoryOption of categoriesSharedCollection; trackBy: trackCategoryById"
             >
-              {{ categoryOption.id }}
+              {{ categoryOption.categoryName }}
             </option>
           </select>
         </div>

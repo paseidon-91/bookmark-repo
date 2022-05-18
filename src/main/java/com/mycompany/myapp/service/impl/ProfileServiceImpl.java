@@ -64,6 +64,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional(readOnly = true)
     public Page<Profile> findAll(Pageable pageable) {
         log.debug("Request to get all Profiles");
+        // TODO предварительно проверь роль юзера. Возможно, стоит вернуть лишь профили текущего юзера
         return profileRepository.findAll(pageable);
     }
 

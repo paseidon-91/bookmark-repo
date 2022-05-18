@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service.impl;
 
 import com.mycompany.myapp.domain.Category;
+import com.mycompany.myapp.exception.BusinessException;
 import com.mycompany.myapp.repository.CategoryRepository;
 import com.mycompany.myapp.service.CategoryService;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category update(Category category) {
         log.debug("Request to save Category : {}", category);
+        if (category.getId().equals(category.getParent().getId())) throw new BusinessException("Неверно указана родительская категория");
         return categoryRepository.save(category);
     }
 

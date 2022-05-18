@@ -21,7 +21,7 @@
         <dt><span jhiTranslate="bookmarkApp.category.parent">Parent</span></dt>
         <dd>
           <div *ngIf="category.parent">
-            <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.id }}</a>
+            <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.categoryName }}</a>
           </div>
         </dd>
       </dl>
