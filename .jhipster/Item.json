@@ -38,15 +38,9 @@
       "relationshipType": "many-to-many"
     },
     {
-      "otherEntityName": "profile",
-      "otherEntityRelationshipName": "item",
-      "relationshipName": "profile",
-      "relationshipType": "many-to-one"
-    },
-    {
       "otherEntityName": "category",
       "otherEntityRelationshipName": "item",
-      "relationshipName": "categoru",
+      "relationshipName": "category",
       "relationshipType": "many-to-one"
     }
   ],

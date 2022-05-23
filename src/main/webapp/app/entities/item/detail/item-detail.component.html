@@ -37,16 +37,10 @@
             >{{ last ? '' : ', ' }}
           </span>
         </dd>
-        <dt><span jhiTranslate="bookmarkApp.item.profile">Profile</span></dt>
+        <dt><span jhiTranslate="bookmarkApp.item.category">Category</span></dt>
         <dd>
-          <div *ngIf="item.profile">
-            <a [routerLink]="['/profile', item.profile?.id, 'view']">{{ item.profile?.id }}</a>
-          </div>
-        </dd>
-        <dt><span jhiTranslate="bookmarkApp.item.categoru">Categoru</span></dt>
-        <dd>
-          <div *ngIf="item.categoru">
-            <a [routerLink]="['/category', item.categoru?.id, 'view']">{{ item.categoru?.id }}</a>
+          <div *ngIf="item.category">
+            <a [routerLink]="['/category', item.category?.id, 'view']">{{ item.category?.id }}</a>
           </div>
         </dd>
       </dl>

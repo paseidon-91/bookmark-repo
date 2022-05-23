@@ -21,7 +21,7 @@
       "profileName": "Profile Name",
       "userId": "User Id",
       "isDefault": "Is Default",
-      "item": "Item"
+      "category": "Category"
     }
   }
 }

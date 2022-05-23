@@ -20,15 +20,9 @@
                                  referencedColumnNames="id"
                                  referencedTableName="tag"/>
 
-        <addForeignKeyConstraint baseColumnNames="profile_id"
+        <addForeignKeyConstraint baseColumnNames="category_id"
                                  baseTableName="item"
-                                 constraintName="fk_item__profile_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="profile"/>
-
-        <addForeignKeyConstraint baseColumnNames="categoru_id"
-                                 baseTableName="item"
-                                 constraintName="fk_item__categoru_id"
+                                 constraintName="fk_item__category_id"
                                  referencedColumnNames="id"
                                  referencedTableName="category"/>
     </changeSet>

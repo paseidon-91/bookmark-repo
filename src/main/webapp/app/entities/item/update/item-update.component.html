@@ -56,27 +56,14 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" jhiTranslate="bookmarkApp.item.profile" for="field_profile">Profile</label>
-          <select class="form-control" id="field_profile" data-cy="profile" name="profile" formControlName="profile">
+          <label class="form-label" jhiTranslate="bookmarkApp.item.category" for="field_category">Category</label>
+          <select class="form-control" id="field_category" data-cy="category" name="category" formControlName="category">
             <option [ngValue]="null"></option>
             <option
-              [ngValue]="profileOption.id === editForm.get('profile')!.value?.id ? editForm.get('profile')!.value : profileOption"
-              *ngFor="let profileOption of profilesSharedCollection; trackBy: trackProfileById"
-            >
-              {{ profileOption.profileName }}
-            </option>
-          </select>
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" jhiTranslate="bookmarkApp.item.categoru" for="field_categoru">Categoru</label>
-          <select class="form-control" id="field_categoru" data-cy="categoru" name="categoru" formControlName="categoru">
-            <option [ngValue]="null"></option>
-            <option
-              [ngValue]="categoryOption.id === editForm.get('categoru')!.value?.id ? editForm.get('categoru')!.value : categoryOption"
+              [ngValue]="categoryOption.id === editForm.get('category')!.value?.id ? editForm.get('category')!.value : categoryOption"
               *ngFor="let categoryOption of categoriesSharedCollection; trackBy: trackCategoryById"
             >
-              {{ categoryOption.categoryName }}
+              {{ categoryOption.id }}
             </option>
           </select>
         </div>

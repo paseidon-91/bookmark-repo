@@ -10,8 +10,6 @@ import { ItemService } from '../service/item.service';
 import { IItem, Item } from '../item.model';
 import { ITag } from 'app/entities/tag/tag.model';
 import { TagService } from 'app/entities/tag/service/tag.service';
-import { IProfile } from 'app/entities/profile/profile.model';
-import { ProfileService } from 'app/entities/profile/service/profile.service';
 import { ICategory } from 'app/entities/category/category.model';
 import { CategoryService } from 'app/entities/category/service/category.service';
 
@@ -23,7 +21,6 @@ describe('Item Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let itemService: ItemService;
   let tagService: TagService;
-  let profileService: ProfileService;
   let categoryService: CategoryService;
 
   beforeEach(() => {
@@ -47,7 +44,6 @@ describe('Item Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     itemService = TestBed.inject(ItemService);
     tagService = TestBed.inject(TagService);
-    profileService = TestBed.inject(ProfileService);
     categoryService = TestBed.inject(CategoryService);
 
     comp = fixture.componentInstance;
@@ -73,33 +69,14 @@ describe('Item Management Update Component', () => {
       expect(comp.tagsSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should call Profile query and add missing value', () => {
-      const item: IItem = { id: 456 };
-      const profile: IProfile = { id: 51070 };
-      item.profile = profile;
-
-      const profileCollection: IProfile[] = [{ id: 27153 }];
-      jest.spyOn(profileService, 'query').mockReturnValue(of(new HttpResponse({ body: profileCollection })));
-      const additionalProfiles = [profile];
-      const expectedCollection: IProfile[] = [...additionalProfiles, ...profileCollection];
-      jest.spyOn(profileService, 'addProfileToCollectionIfMissing').mockReturnValue(expectedCollection);
-
-      activatedRoute.data = of({ item });
-      comp.ngOnInit();
-
-      expect(profileService.query).toHaveBeenCalled();
-      expect(profileService.addProfileToCollectionIfMissing).toHaveBeenCalledWith(profileCollection, ...additionalProfiles);
-      expect(comp.profilesSharedCollection).toEqual(expectedCollection);
-    });
-
     it('Should call Category query and add missing value', () => {
       const item: IItem = { id: 456 };
-      const categoru: ICategory = { id: 80346 };
-      item.categoru = categoru;
+      const category: ICategory = { id: 80346 };
+      item.category = category;
 
       const categoryCollection: ICategory[] = [{ id: 36277 }];
       jest.spyOn(categoryService, 'query').mockReturnValue(of(new HttpResponse({ body: categoryCollection })));
-      const additionalCategories = [categoru];
+      const additionalCategories = [category];
       const expectedCollection: ICategory[] = [...additionalCategories, ...categoryCollection];
       jest.spyOn(categoryService, 'addCategoryToCollectionIfMissing').mockReturnValue(expectedCollection);
 
@@ -115,18 +92,15 @@ describe('Item Management Update Component', () => {
       const item: IItem = { id: 456 };
       const tags: ITag = { id: 53961 };
       item.tags = [tags];
-      const profile: IProfile = { id: 35547 };
-      item.profile = profile;
-      const categoru: ICategory = { id: 54163 };
-      item.categoru = categoru;
+      const category: ICategory = { id: 54163 };
+      item.category = category;
 
       activatedRoute.data = of({ item });
       comp.ngOnInit();
 
       expect(comp.editForm.value).toEqual(expect.objectContaining(item));
       expect(comp.tagsSharedCollection).toContain(tags);
-      expect(comp.profilesSharedCollection).toContain(profile);
-      expect(comp.categoriesSharedCollection).toContain(categoru);
+      expect(comp.categoriesSharedCollection).toContain(category);
     });
   });
 
@@ -199,14 +173,6 @@ describe('Item Management Update Component', () => {
       it('Should return tracked Tag primary key', () => {
         const entity = { id: 123 };
         const trackResult = comp.trackTagById(0, entity);
-        expect(trackResult).toEqual(entity.id);
-      });
-    });
-
-    describe('trackProfileById', () => {
-      it('Should return tracked Profile primary key', () => {
-        const entity = { id: 123 };
-        const trackResult = comp.trackProfileById(0, entity);
         expect(trackResult).toEqual(entity.id);
       });
     });
