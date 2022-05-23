@@ -8,6 +8,8 @@ import { of, Subject, from } from 'rxjs';
 
 import { CategoryService } from '../service/category.service';
 import { ICategory, Category } from '../category.model';
+import { IProfile } from 'app/entities/profile/profile.model';
+import { ProfileService } from 'app/entities/profile/service/profile.service';
 
 import { CategoryUpdateComponent } from './category-update.component';
 
@@ -16,6 +18,7 @@ describe('Category Management Update Component', () => {
   let fixture: ComponentFixture<CategoryUpdateComponent>;
   let activatedRoute: ActivatedRoute;
   let categoryService: CategoryService;
+  let profileService: ProfileService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -37,6 +40,7 @@ describe('Category Management Update Component', () => {
     fixture = TestBed.createComponent(CategoryUpdateComponent);
     activatedRoute = TestBed.inject(ActivatedRoute);
     categoryService = TestBed.inject(CategoryService);
+    profileService = TestBed.inject(ProfileService);
 
     comp = fixture.componentInstance;
   });
@@ -61,16 +65,38 @@ describe('Category Management Update Component', () => {
       expect(comp.categoriesSharedCollection).toEqual(expectedCollection);
     });
 
+    it('Should call Profile query and add missing value', () => {
+      const category: ICategory = { id: 456 };
+      const profile: IProfile = { id: 32878 };
+      category.profile = profile;
+
+      const profileCollection: IProfile[] = [{ id: 53333 }];
+      jest.spyOn(profileService, 'query').mockReturnValue(of(new HttpResponse({ body: profileCollection })));
+      const additionalProfiles = [profile];
+      const expectedCollection: IProfile[] = [...additionalProfiles, ...profileCollection];
+      jest.spyOn(profileService, 'addProfileToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ category });
+      comp.ngOnInit();
+
+      expect(profileService.query).toHaveBeenCalled();
+      expect(profileService.addProfileToCollectionIfMissing).toHaveBeenCalledWith(profileCollection, ...additionalProfiles);
+      expect(comp.profilesSharedCollection).toEqual(expectedCollection);
+    });
+
     it('Should update editForm', () => {
       const category: ICategory = { id: 456 };
       const parent: ICategory = { id: 75631 };
       category.parent = parent;
+      const profile: IProfile = { id: 22352 };
+      category.profile = profile;
 
       activatedRoute.data = of({ category });
       comp.ngOnInit();
 
       expect(comp.editForm.value).toEqual(expect.objectContaining(category));
       expect(comp.categoriesSharedCollection).toContain(parent);
+      expect(comp.profilesSharedCollection).toContain(profile);
     });
   });
 
@@ -143,6 +169,14 @@ describe('Category Management Update Component', () => {
       it('Should return tracked Category primary key', () => {
         const entity = { id: 123 };
         const trackResult = comp.trackCategoryById(0, entity);
+        expect(trackResult).toEqual(entity.id);
+      });
+    });
+
+    describe('trackProfileById', () => {
+      it('Should return tracked Profile primary key', () => {
+        const entity = { id: 123 };
+        const trackResult = comp.trackProfileById(0, entity);
         expect(trackResult).toEqual(entity.id);
       });
     });

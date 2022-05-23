@@ -41,9 +41,6 @@
           <th scope="col" jhiSortBy="content">
             <span jhiTranslate="bookmarkApp.item.content">Content</span> <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="profile.id">
-            <span jhiTranslate="bookmarkApp.item.profile">Profile</span> <fa-icon icon="sort"></fa-icon>
-          </th>
           <th scope="col" jhiSortBy="categoru.id">
             <span jhiTranslate="bookmarkApp.item.categoru">Categoru</span> <fa-icon icon="sort"></fa-icon>
           </th>
@@ -60,13 +57,8 @@
           <td jhiTranslate="{{ 'bookmarkApp.ItemType.' + item.type }}">{{ item.type }}</td>
           <td>{{ item.content }}</td>
           <td>
-            <div *ngIf="item.profile">
-              <a [routerLink]="['/profile', item.profile?.id, 'view']">{{ item.profile?.profileName }}</a>
-            </div>
-          </td>
-          <td>
             <div *ngIf="item.categoru">
-              <a [routerLink]="['/category', item.categoru?.id, 'view']">{{ item.categoru?.categoryName }}</a>
+              <a [routerLink]="['/category', item.categoru?.id, 'view']">{{ item.categoru?.id }}</a>
             </div>
           </td>
           <td class="text-end">

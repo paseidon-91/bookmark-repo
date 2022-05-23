@@ -26,9 +26,6 @@
             <column name="content" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="profile_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
             <column name="categoru_id" type="bigint">
                 <constraints nullable="true" />
             </column>

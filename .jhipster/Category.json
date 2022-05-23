@@ -27,6 +27,12 @@
       "otherEntityRelationshipName": "category",
       "relationshipName": "parent",
       "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "profile",
+      "otherEntityRelationshipName": "category",
+      "relationshipName": "profile",
+      "relationshipType": "many-to-one"
     }
   ],
   "service": "serviceImpl"

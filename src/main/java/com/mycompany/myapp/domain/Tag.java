@@ -24,25 +24,12 @@ public class Tag implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    // TODO добавить версионирование
-    //    @Version
-    //    @Column(name = "version")
-    //    private int version;
-    //
-    //    public int getVersion() {
-    //        return version;
-    //    }
-    //
-    //    public void setVersion(int version) {
-    //        this.version = version;
-    //    }
-
     @Column(name = "tag")
     private String tag;
 
     @ManyToMany(mappedBy = "tags")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "tags", "profile", "categoru" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "tags", "categoru" }, allowSetters = true)
     private Set<Item> tags = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

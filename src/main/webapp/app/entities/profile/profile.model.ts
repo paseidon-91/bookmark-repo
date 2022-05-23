@@ -1,11 +1,11 @@
-import { IItem } from 'app/entities/item/item.model';
+import { ICategory } from 'app/entities/category/category.model';
 
 export interface IProfile {
   id?: number;
   profileName?: string | null;
   userId?: number | null;
   isDefault?: boolean | null;
-  items?: IItem[] | null;
+  categories?: ICategory[] | null;
 }
 
 export class Profile implements IProfile {
@@ -14,7 +14,7 @@ export class Profile implements IProfile {
     public profileName?: string | null,
     public userId?: number | null,
     public isDefault?: boolean | null,
-    public items?: IItem[] | null
+    public categories?: ICategory[] | null
   ) {
     this.isDefault = this.isDefault ?? false;
   }

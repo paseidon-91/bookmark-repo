@@ -38,19 +38,6 @@ public class Item implements Serializable {
     @Column(name = "content")
     private String content;
 
-    // TODO добавить версионирование
-    //    @Version
-    //    @Column(name = "version")
-    //    private int version;
-    //
-    //    public int getVersion() {
-    //        return version;
-    //    }
-    //
-    //    public void setVersion(int version) {
-    //        this.version = version;
-    //    }
-
     @ManyToMany
     @JoinTable(name = "rel_item__tag", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -58,11 +45,7 @@ public class Item implements Serializable {
     private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "items" }, allowSetters = true)
-    private Profile profile;
-
-    @ManyToOne
-    @JsonIgnoreProperties(value = { "items", "parent" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "items", "parent", "profile" }, allowSetters = true)
     private Category categoru;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -154,19 +137,6 @@ public class Item implements Serializable {
     public Item removeTag(Tag tag) {
         this.tags.remove(tag);
         tag.getTags().remove(this);
-        return this;
-    }
-
-    public Profile getProfile() {
-        return this.profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public Item profile(Profile profile) {
-        this.setProfile(profile);
         return this;
     }
 

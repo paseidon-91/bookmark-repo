@@ -10,6 +10,5 @@ import { CategoryRoutingModule } from './route/category-routing.module';
   imports: [SharedModule, CategoryRoutingModule],
   declarations: [CategoryComponent, CategoryDetailComponent, CategoryUpdateComponent, CategoryDeleteDialogComponent],
   entryComponents: [CategoryDeleteDialogComponent],
-  exports: [CategoryComponent],
 })
 export class CategoryModule {}

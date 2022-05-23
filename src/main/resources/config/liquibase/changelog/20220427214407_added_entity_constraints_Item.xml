@@ -20,12 +20,6 @@
                                  referencedColumnNames="id"
                                  referencedTableName="tag"/>
 
-        <addForeignKeyConstraint baseColumnNames="profile_id"
-                                 baseTableName="item"
-                                 constraintName="fk_item__profile_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="profile"/>
-
         <addForeignKeyConstraint baseColumnNames="categoru_id"
                                  baseTableName="item"
                                  constraintName="fk_item__categoru_id"

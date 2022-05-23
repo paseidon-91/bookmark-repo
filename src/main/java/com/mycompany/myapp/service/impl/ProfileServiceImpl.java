@@ -1,11 +1,8 @@
 package com.mycompany.myapp.service.impl;
 
 import com.mycompany.myapp.domain.Profile;
-import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.ProfileRepository;
-import com.mycompany.myapp.security.UserNotAuthorizedException;
 import com.mycompany.myapp.service.ProfileService;
-import com.mycompany.myapp.service.UserService;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +21,9 @@ public class ProfileServiceImpl implements ProfileService {
     private final Logger log = LoggerFactory.getLogger(ProfileServiceImpl.class);
 
     private final ProfileRepository profileRepository;
-    private final UserService userService;
 
-    public ProfileServiceImpl(ProfileRepository profileRepository, UserService userService) {
+    public ProfileServiceImpl(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
-        this.userService = userService;
     }
 
     @Override
@@ -68,10 +63,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional(readOnly = true)
     public Page<Profile> findAll(Pageable pageable) {
-        final User user = userService.getUserWithAuthorities().orElseThrow(UserNotAuthorizedException::new);
         log.debug("Request to get all Profiles");
-        // TODO предварительно проверь роль юзера. Возможно, стоит вернуть лишь профили текущего юзера
-        return profileRepository.findAllByUserId(pageable, user.getId());
+        return profileRepository.findAll(pageable);
     }
 
     @Override

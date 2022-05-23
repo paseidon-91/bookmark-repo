@@ -33,23 +33,10 @@ public class Profile implements Serializable {
     @Column(name = "is_default")
     private Boolean isDefault;
 
-    // TODO добавить версионирование
-    //    @Version
-    //    @Column(name = "version")
-    //    private int version;
-    //
-    //    public int getVersion() {
-    //        return version;
-    //    }
-    //
-    //    public void setVersion(int version) {
-    //        this.version = version;
-    //    }
-
     @OneToMany(mappedBy = "profile")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "tags", "profile", "categoru" }, allowSetters = true)
-    private Set<Item> items = new HashSet<>();
+    @JsonIgnoreProperties(value = { "items", "parent", "profile" }, allowSetters = true)
+    private Set<Category> categories = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -105,34 +92,34 @@ public class Profile implements Serializable {
         this.isDefault = isDefault;
     }
 
-    public Set<Item> getItems() {
-        return this.items;
+    public Set<Category> getCategories() {
+        return this.categories;
     }
 
-    public void setItems(Set<Item> items) {
-        if (this.items != null) {
-            this.items.forEach(i -> i.setProfile(null));
+    public void setCategories(Set<Category> categories) {
+        if (this.categories != null) {
+            this.categories.forEach(i -> i.setProfile(null));
         }
-        if (items != null) {
-            items.forEach(i -> i.setProfile(this));
+        if (categories != null) {
+            categories.forEach(i -> i.setProfile(this));
         }
-        this.items = items;
+        this.categories = categories;
     }
 
-    public Profile items(Set<Item> items) {
-        this.setItems(items);
+    public Profile categories(Set<Category> categories) {
+        this.setCategories(categories);
         return this;
     }
 
-    public Profile addItem(Item item) {
-        this.items.add(item);
-        item.setProfile(this);
+    public Profile addCategory(Category category) {
+        this.categories.add(category);
+        category.setProfile(this);
         return this;
     }
 
-    public Profile removeItem(Item item) {
-        this.items.remove(item);
-        item.setProfile(null);
+    public Profile removeCategory(Category category) {
+        this.categories.remove(category);
+        category.setProfile(null);
         return this;
     }
 

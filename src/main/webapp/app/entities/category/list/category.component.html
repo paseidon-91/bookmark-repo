@@ -39,6 +39,9 @@
           <th scope="col" jhiSortBy="parent.id">
             <span jhiTranslate="bookmarkApp.category.parent">Parent</span> <fa-icon icon="sort"></fa-icon>
           </th>
+          <th scope="col" jhiSortBy="profile.id">
+            <span jhiTranslate="bookmarkApp.category.profile">Profile</span> <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -50,7 +53,12 @@
           <td>{{ category.categoryName }}</td>
           <td>
             <div *ngIf="category.parent">
-              <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.categoryName }}</a>
+              <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.id }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="category.profile">
+              <a [routerLink]="['/profile', category.profile?.id, 'view']">{{ category.profile?.id }}</a>
             </div>
           </td>
           <td class="text-end">
