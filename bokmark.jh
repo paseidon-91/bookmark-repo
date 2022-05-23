@@ -25,8 +25,8 @@ entity Tag {
 }
 
 relationship OneToMany {
-	Profile to Item{profile},
-	Category to Item{categoru}
+	Profile to Category{profile},
+	Category to Item{category}
 }
 
 relationship ManyToOne {
