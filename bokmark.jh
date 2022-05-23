@@ -6,7 +6,8 @@ entity Profile {
 }
 
 entity Category {
-	categoryName String
+	categoryName String,
+    profile Profile
 }
 
 enum ItemType {
@@ -25,7 +26,7 @@ entity Tag {
 }
 
 relationship OneToMany {
-	Profile to Item{profile},
+	Profile to Category{profile},
 	Category to Item{categoru}
 }
 
