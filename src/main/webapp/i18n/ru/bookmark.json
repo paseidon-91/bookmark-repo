@@ -1,0 +1,35 @@
+{
+  "bookmarkApp": {
+    "filter": {
+      "profile": {
+        "title": "Профиль"
+      },
+      "category": {
+        "title": "Категории",
+        "refreshListLabel": "Обновить список",
+        "searchLabel": "Найти",
+        "createLabel": "Создать новую категорию"
+      }
+    },
+    "data": {
+      "search": {
+        "title": "Поиск"
+      },
+      "bookmarks": {
+        "title": "Закладки",
+        "notFound": "Закладок не найдено",
+        "createLabel": "Добавить закладку",
+        "refreshListLabel": "Обновить список",
+        "columns": {
+          "id": "ID",
+          "title": "Название",
+          "description": "Описание",
+          "type": "Тип",
+          "content": "Содержимое закладки",
+          "profile": "Профиль",
+          "category": "Категория"
+        }
+      }
+    }
+  }
+}

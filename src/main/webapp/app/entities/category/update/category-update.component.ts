@@ -30,6 +30,8 @@ export class CategoryUpdateComponent implements OnInit {
       this.updateForm(category);
 
       this.loadRelationshipsOptions();
+      window.console.log('this.activatedRoute.data');
+      window.console.log(this.activatedRoute);
     });
   }
 

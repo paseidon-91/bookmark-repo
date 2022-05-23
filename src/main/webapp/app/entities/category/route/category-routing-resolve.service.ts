@@ -24,6 +24,23 @@ export class CategoryRoutingResolveService implements Resolve<ICategory> {
           }
         })
       );
+    } else {
+      const parentId = route.queryParams['parentId'];
+      const resultCategory: Category = new Category();
+      if (parentId) {
+        return this.service.find(parentId).pipe(
+          mergeMap((category: HttpResponse<Category>) => {
+            if (category.body) {
+              resultCategory.parent = category.body;
+              return of(resultCategory);
+            } else {
+              //todo как-то иначе обработать бы этот кейс
+              this.router.navigate(['404']);
+              return EMPTY;
+            }
+          })
+        );
+      }
     }
     return of(new Category());
   }

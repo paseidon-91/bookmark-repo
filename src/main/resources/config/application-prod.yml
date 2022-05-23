@@ -48,6 +48,7 @@ spring:
   liquibase:
     contexts: prod
     default-schema: bookmark
+    # todo настроить почту исходящую
   mail:
     host: localhost
     port: 25

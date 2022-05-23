@@ -36,6 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category update(Category category) {
         log.debug("Request to save Category : {}", category);
+        // TODO Сделать проверку цикличной
         if (category.getId().equals(category.getParent().getId())) throw new BusinessException("Неверно указана родительская категория");
         return categoryRepository.save(category);
     }

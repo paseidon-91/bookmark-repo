@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -69,7 +68,7 @@ public class CategoryResource {
     /**
      * {@code PUT  /categories/:id} : Updates an existing category.
      *
-     * @param id the id of the category to save.
+     * @param id       the id of the category to save.
      * @param category the category to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated category,
      * or with status {@code 400 (Bad Request)} if the category is not valid,
@@ -103,7 +102,7 @@ public class CategoryResource {
     /**
      * {@code PATCH  /categories/:id} : Partial updates given fields of an existing category, field will ignore if it is null
      *
-     * @param id the id of the category to save.
+     * @param id       the id of the category to save.
      * @param category the category to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated category,
      * or with status {@code 400 (Bad Request)} if the category is not valid,
