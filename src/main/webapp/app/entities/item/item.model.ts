@@ -1,5 +1,4 @@
 import { ITag } from 'app/entities/tag/tag.model';
-import { IProfile } from 'app/entities/profile/profile.model';
 import { ICategory } from 'app/entities/category/category.model';
 import { ItemType } from 'app/entities/enumerations/item-type.model';
 
@@ -10,8 +9,7 @@ export interface IItem {
   type?: ItemType | null;
   content?: string | null;
   tags?: ITag[] | null;
-  profile?: IProfile | null;
-  categoru?: ICategory | null;
+  category?: ICategory | null;
 }
 
 export class Item implements IItem {
@@ -22,8 +20,7 @@ export class Item implements IItem {
     public type?: ItemType | null,
     public content?: string | null,
     public tags?: ITag[] | null,
-    public profile?: IProfile | null,
-    public categoru?: ICategory | null
+    public category?: ICategory | null
   ) {}
 }
 

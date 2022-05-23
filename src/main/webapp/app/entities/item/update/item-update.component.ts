@@ -9,8 +9,6 @@ import { IItem, Item } from '../item.model';
 import { ItemService } from '../service/item.service';
 import { ITag } from 'app/entities/tag/tag.model';
 import { TagService } from 'app/entities/tag/service/tag.service';
-import { IProfile } from 'app/entities/profile/profile.model';
-import { ProfileService } from 'app/entities/profile/service/profile.service';
 import { ICategory } from 'app/entities/category/category.model';
 import { CategoryService } from 'app/entities/category/service/category.service';
 import { ItemType } from 'app/entities/enumerations/item-type.model';
@@ -24,7 +22,6 @@ export class ItemUpdateComponent implements OnInit {
   itemTypeValues = Object.keys(ItemType);
 
   tagsSharedCollection: ITag[] = [];
-  profilesSharedCollection: IProfile[] = [];
   categoriesSharedCollection: ICategory[] = [];
 
   editForm = this.fb.group({
@@ -34,14 +31,12 @@ export class ItemUpdateComponent implements OnInit {
     type: [],
     content: [],
     tags: [],
-    profile: [],
-    categoru: [],
+    category: [],
   });
 
   constructor(
     protected itemService: ItemService,
     protected tagService: TagService,
-    protected profileService: ProfileService,
     protected categoryService: CategoryService,
     protected activatedRoute: ActivatedRoute,
     protected fb: FormBuilder
@@ -70,10 +65,6 @@ export class ItemUpdateComponent implements OnInit {
   }
 
   trackTagById(_index: number, item: ITag): number {
-    return item.id!;
-  }
-
-  trackProfileById(_index: number, item: IProfile): number {
     return item.id!;
   }
 
@@ -119,13 +110,11 @@ export class ItemUpdateComponent implements OnInit {
       type: item.type,
       content: item.content,
       tags: item.tags,
-      profile: item.profile,
-      categoru: item.categoru,
+      category: item.category,
     });
 
     this.tagsSharedCollection = this.tagService.addTagToCollectionIfMissing(this.tagsSharedCollection, ...(item.tags ?? []));
-    this.profilesSharedCollection = this.profileService.addProfileToCollectionIfMissing(this.profilesSharedCollection, item.profile);
-    this.categoriesSharedCollection = this.categoryService.addCategoryToCollectionIfMissing(this.categoriesSharedCollection, item.categoru);
+    this.categoriesSharedCollection = this.categoryService.addCategoryToCollectionIfMissing(this.categoriesSharedCollection, item.category);
   }
 
   protected loadRelationshipsOptions(): void {
@@ -135,20 +124,12 @@ export class ItemUpdateComponent implements OnInit {
       .pipe(map((tags: ITag[]) => this.tagService.addTagToCollectionIfMissing(tags, ...(this.editForm.get('tags')!.value ?? []))))
       .subscribe((tags: ITag[]) => (this.tagsSharedCollection = tags));
 
-    this.profileService
-      .query()
-      .pipe(map((res: HttpResponse<IProfile[]>) => res.body ?? []))
-      .pipe(
-        map((profiles: IProfile[]) => this.profileService.addProfileToCollectionIfMissing(profiles, this.editForm.get('profile')!.value))
-      )
-      .subscribe((profiles: IProfile[]) => (this.profilesSharedCollection = profiles));
-
     this.categoryService
       .query()
       .pipe(map((res: HttpResponse<ICategory[]>) => res.body ?? []))
       .pipe(
         map((categories: ICategory[]) =>
-          this.categoryService.addCategoryToCollectionIfMissing(categories, this.editForm.get('categoru')!.value)
+          this.categoryService.addCategoryToCollectionIfMissing(categories, this.editForm.get('category')!.value)
         )
       )
       .subscribe((categories: ICategory[]) => (this.categoriesSharedCollection = categories));
@@ -163,8 +144,7 @@ export class ItemUpdateComponent implements OnInit {
       type: this.editForm.get(['type'])!.value,
       content: this.editForm.get(['content'])!.value,
       tags: this.editForm.get(['tags'])!.value,
-      profile: this.editForm.get(['profile'])!.value,
-      categoru: this.editForm.get(['categoru'])!.value,
+      category: this.editForm.get(['category'])!.value,
     };
   }
 }

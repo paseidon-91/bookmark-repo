@@ -25,9 +25,9 @@
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityName": "item",
+      "otherEntityName": "category",
       "otherEntityRelationshipName": "profile",
-      "relationshipName": "item",
+      "relationshipName": "category",
       "relationshipType": "one-to-many"
     }
   ],

@@ -13,5 +13,11 @@
                                  constraintName="fk_category__parent_id"
                                  referencedColumnNames="id"
                                  referencedTableName="category"/>
+
+        <addForeignKeyConstraint baseColumnNames="profile_id"
+                                 baseTableName="category"
+                                 constraintName="fk_category__profile_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="profile"/>
     </changeSet>
 </databaseChangeLog>

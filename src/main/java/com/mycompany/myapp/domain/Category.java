@@ -27,27 +27,18 @@ public class Category implements Serializable {
     @Column(name = "category_name")
     private String categoryName;
 
-    // TODO добавить версионирование
-    //    @Version
-    //    @Column(name = "version")
-    //    private int version;
-    //
-    //    public int getVersion() {
-    //        return version;
-    //    }
-    //
-    //    public void setVersion(int version) {
-    //        this.version = version;
-    //    }
-
-    @OneToMany(mappedBy = "categoru")
+    @OneToMany(mappedBy = "category")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "tags", "profile", "categoru" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "tags", "category" }, allowSetters = true)
     private Set<Item> items = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "items", "parent" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "items", "parent", "profile" }, allowSetters = true)
     private Category parent;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "categories" }, allowSetters = true)
+    private Profile profile;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -83,10 +74,10 @@ public class Category implements Serializable {
 
     public void setItems(Set<Item> items) {
         if (this.items != null) {
-            this.items.forEach(i -> i.setCategoru(null));
+            this.items.forEach(i -> i.setCategory(null));
         }
         if (items != null) {
-            items.forEach(i -> i.setCategoru(this));
+            items.forEach(i -> i.setCategory(this));
         }
         this.items = items;
     }
@@ -98,13 +89,13 @@ public class Category implements Serializable {
 
     public Category addItem(Item item) {
         this.items.add(item);
-        item.setCategoru(this);
+        item.setCategory(this);
         return this;
     }
 
     public Category removeItem(Item item) {
         this.items.remove(item);
-        item.setCategoru(null);
+        item.setCategory(null);
         return this;
     }
 
@@ -118,6 +109,19 @@ public class Category implements Serializable {
 
     public Category parent(Category category) {
         this.setParent(category);
+        return this;
+    }
+
+    public Profile getProfile() {
+        return this.profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public Category profile(Profile profile) {
+        this.setProfile(profile);
         return this;
     }
 

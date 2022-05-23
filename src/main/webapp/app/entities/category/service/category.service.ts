@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { CategoryLeaf, categoryToNode, getCategoryIdentifier, ICategory, ICategoryLeaf, ICategoryNode } from '../category.model';
+import { ICategory, getCategoryIdentifier } from '../category.model';
 
 export type EntityResponseType = HttpResponse<ICategory>;
 export type EntityArrayResponseType = HttpResponse<ICategory[]>;
@@ -58,123 +58,5 @@ export class CategoryService {
       return [...categoriesToAdd, ...categoryCollection];
     }
     return categoryCollection;
-  }
-
-  parseCategoryToTree(categoryCollection: ICategory[]): ICategoryNode[] {
-    const result: ICategoryNode[] = [];
-
-    if (categoryCollection.length > 0) {
-      const sortedCategories = this.getSortedArr(categoryCollection);
-      sortedCategories.forEach(cat => {
-        const node: ICategoryNode | null | undefined = this.findInChildren(cat, result);
-        if (!isPresent(node)) {
-          result.push(categoryToNode(cat));
-        } else {
-          node.children?.push(categoryToNode(cat));
-        }
-      });
-      this.deepSort(result);
-      return result;
-    }
-    return [];
-  }
-
-  convertAll(nodes: ICategoryNode[]): any[] {
-    function nodeToLeaf(node: ICategoryNode): ICategoryLeaf {
-      return new CategoryLeaf(node.id, node.name);
-    }
-
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i].children?.length > 0) {
-        nodes[i].children = this.convertAll(nodes[i].children);
-      } else {
-        nodes[i] = nodeToLeaf(nodes[i]);
-      }
-    }
-    return nodes;
-  }
-
-  // Упорядочит коллекцию перед слиянием в кошерное дерево
-  protected getSortedArr(categoryCollection: ICategory[]): ICategory[] {
-    const result: ICategory[] = [];
-    for (let i = categoryCollection.length - 1; i >= 0; i--) {
-      if (!isPresent(categoryCollection[i].parent)) {
-        result.push(categoryCollection[i]);
-        categoryCollection.splice(i, 1);
-      }
-    }
-    let diff = result.length;
-    while (categoryCollection.length > 0) {
-      for (let i = categoryCollection.length - 1; i >= 0; i--) {
-        if (result.map(item => getCategoryIdentifier(item)).includes(categoryCollection[i].parent?.id)) {
-          result.push(categoryCollection[i]);
-          categoryCollection.splice(i, 1);
-        }
-      }
-      diff = result.length - diff;
-      if (diff === 0) {
-        if (categoryCollection.length > 0) {
-          result.concat(categoryCollection);
-        }
-        break;
-      }
-    }
-    return result;
-  }
-
-  protected findInChildren(category: ICategory, nodes: ICategoryNode[]): ICategoryNode | null | undefined {
-    let result = null;
-    for (const node of nodes) {
-      if (isPresent(category.parent) && category.parent.id === node.id) {
-        result = node;
-        return result;
-      } else {
-        if (!isPresent(node.children) || node.children.length === 0) {
-          // result = null;
-        } else {
-          result = this.findInChildren(category, node.children);
-          if (result !== null) {
-            return result;
-          }
-        }
-      }
-    }
-    return result;
-  }
-
-  protected deepSort(arr: any[]): void {
-    /*    function compareIds(a: ICategory, b: ICategory): number {
-      // todo В идеале алгоритм должен быть такой:
-      // проверить id и parent.id
-      if (!isPresent(a.id) && !isPresent(b.id)) {
-        return 0;
-      }
-      if (!isPresent(b.parent) && isPresent(a.parent)) {
-        return 1
-      }
-      if (!isPresent(a.parent) && isPresent(b.parent)) {
-        return -1
-      }
-      if (isPresent(a.id) && isPresent(b.id)) {
-        // if (isPresent(b.parent) && isPresent(b.parent.id) && b.parent.id === a.id) {
-        //   window.console.log("ch1")
-        //   return 1;
-        // } else if (isPresent(a.parent) && isPresent(a.parent.id) && a.parent.id === b.id) {
-        //   window.console.log("ch2")
-        //   return -1;
-        // }
-        return a.id - b.id;
-      }
-      return isPresent(a.id) ? 1 : -1;
-    }*/
-    function compareNames(a: any, b: any): number {
-      return a.name.toUpperCase() === b.name.toUpperCase() ? 0 : a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1;
-    }
-    arr.sort(compareNames);
-    arr.forEach(node => {
-      if (node.children) {
-        this.deepSort(node.children);
-      }
-    });
   }
 }

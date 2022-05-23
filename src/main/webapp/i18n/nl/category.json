@@ -20,7 +20,8 @@
       "id": "ID",
       "categoryName": "Category Name",
       "item": "Item",
-      "parent": "Parent"
+      "parent": "Parent",
+      "profile": "Profile"
     }
   }
 }

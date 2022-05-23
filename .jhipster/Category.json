@@ -18,7 +18,7 @@
   "relationships": [
     {
       "otherEntityName": "item",
-      "otherEntityRelationshipName": "categoru",
+      "otherEntityRelationshipName": "category",
       "relationshipName": "item",
       "relationshipType": "one-to-many"
     },
@@ -26,6 +26,12 @@
       "otherEntityName": "category",
       "otherEntityRelationshipName": "category",
       "relationshipName": "parent",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "profile",
+      "otherEntityRelationshipName": "category",
+      "relationshipName": "profile",
       "relationshipType": "many-to-one"
     }
   ],
