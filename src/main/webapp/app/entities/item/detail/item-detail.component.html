@@ -40,7 +40,7 @@
         <dt><span jhiTranslate="bookmarkApp.item.category">Category</span></dt>
         <dd>
           <div *ngIf="item.category">
-            <a [routerLink]="['/category', item.category?.id, 'view']">{{ item.category?.id }}</a>
+            <a [routerLink]="['/category', item.category?.id, 'view']">{{ item.category?.categoryName }}</a>
           </div>
         </dd>
       </dl>

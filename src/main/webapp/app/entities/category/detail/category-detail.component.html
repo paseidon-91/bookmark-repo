@@ -21,13 +21,13 @@
         <dt><span jhiTranslate="bookmarkApp.category.parent">Parent</span></dt>
         <dd>
           <div *ngIf="category.parent">
-            <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.id }}</a>
+            <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.categoryName }}</a>
           </div>
         </dd>
         <dt><span jhiTranslate="bookmarkApp.category.profile">Profile</span></dt>
         <dd>
           <div *ngIf="category.profile">
-            <a [routerLink]="['/profile', category.profile?.id, 'view']">{{ category.profile?.id }}</a>
+            <a [routerLink]="['/profile', category.profile?.id, 'view']">{{ category.profile?.profileName }}</a>
           </div>
         </dd>
       </dl>

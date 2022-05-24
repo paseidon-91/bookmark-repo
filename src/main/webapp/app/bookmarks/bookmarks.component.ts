@@ -227,7 +227,16 @@ export class BookmarksComponent implements OnInit {
   }
 
   getCategoryQueryParams(): any {
-    if (this.selectedCategory.focusedNodeId) {
+    if (this.selectedProfile?.id && this.selectedCategory.focusedNodeId) {
+      return {
+        profile: this.selectedProfile.id.toString(),
+        parentId: this.selectedCategory.focusedNodeId.toString(),
+      };
+    } else if (this.selectedProfile?.id) {
+      return {
+        profile: this.selectedProfile.id.toString(),
+      };
+    } else if (this.selectedCategory.focusedNodeId) {
       return {
         parentId: this.selectedCategory.focusedNodeId.toString(),
       };
@@ -237,16 +246,7 @@ export class BookmarksComponent implements OnInit {
   }
 
   getItemQueryParams(): any {
-    if (this.selectedProfile?.id && this.selectedCategory.focusedNodeId) {
-      return {
-        profile: this.selectedProfile.id.toString(),
-        category: this.selectedCategory.focusedNodeId.toString(),
-      };
-    } else if (this.selectedProfile?.id) {
-      return {
-        profile: this.selectedProfile.id.toString(),
-      };
-    } else if (this.selectedCategory.focusedNodeId) {
+    if (this.selectedCategory.focusedNodeId) {
       return {
         category: this.selectedCategory.focusedNodeId.toString(),
       };

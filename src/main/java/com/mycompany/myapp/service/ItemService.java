@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service;
 
+import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.Item;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -42,12 +43,32 @@ public interface ItemService {
     Page<Item> findAll(Pageable pageable);
 
     /**
+     * Get filtered collection of items.
+     *
+     * @param pageable   the pagination information.
+     * @param category   the category information
+     * @param searchText part of string for search in title/description/tags of bookmarks
+     * @return the list of entities.
+     */
+    Page<Item> findByParams(Pageable pageable, Category category, String searchText);
+
+    /**
      * Get all the items with eager load of many-to-many relationships.
      *
      * @param pageable the pagination information.
      * @return the list of entities.
      */
     Page<Item> findAllWithEagerRelationships(Pageable pageable);
+
+    /**
+     * Get filtered collection of items with eager load of many-to-many relationships.
+     *
+     * @param pageable   the pagination information.
+     * @param category   the category information
+     * @param searchText part of string for search in title/description/tags of bookmarks
+     * @return the list of entities.
+     */
+    Page<Item> findByParamsWithEagerRelationships(Pageable pageable, Category category, String searchText);
 
     /**
      * Get the "id" item.

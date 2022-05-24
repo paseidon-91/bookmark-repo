@@ -58,7 +58,7 @@
           <td>{{ item.content }}</td>
           <td>
             <div *ngIf="item.category">
-              <a [routerLink]="['/category', item.category?.id, 'view']">{{ item.category?.id }}</a>
+              <a [routerLink]="['/category', item.category?.id, 'view']">{{ item.category?.categoryName }}</a>
             </div>
           </td>
           <td class="text-end">
