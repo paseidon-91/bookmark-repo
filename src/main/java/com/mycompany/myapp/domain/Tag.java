@@ -24,6 +24,19 @@ public class Tag implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    // TODO добавить версионирование
+    //    @Version
+    //    @Column(name = "version")
+    //    private int version;
+    //
+    //    public int getVersion() {
+    //        return version;
+    //    }
+    //
+    //    public void setVersion(int version) {
+    //        this.version = version;
+    //    }
+
     @Column(name = "tag")
     private String tag;
 

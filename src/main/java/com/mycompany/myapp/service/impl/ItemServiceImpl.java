@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service.impl;
 
+import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.Item;
 import com.mycompany.myapp.repository.ItemRepository;
 import com.mycompany.myapp.service.ItemService;
@@ -70,8 +71,19 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findAll(pageable);
     }
 
+    @Override
+    public Page<Item> findByParams(Pageable pageable, Category category, String searchText) {
+        log.debug("Request to get filtered Items collection");
+        return itemRepository.findByParams(pageable, category, searchText);
+    }
+
     public Page<Item> findAllWithEagerRelationships(Pageable pageable) {
         return itemRepository.findAllWithEagerRelationships(pageable);
+    }
+
+    @Override
+    public Page<Item> findByParamsWithEagerRelationships(Pageable pageable, Category category, String searchText) {
+        return itemRepository.findByParamsWithEagerRelationships(pageable, category, searchText);
     }
 
     @Override

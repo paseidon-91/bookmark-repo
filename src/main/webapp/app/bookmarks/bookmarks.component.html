@@ -130,12 +130,8 @@
                   <span jhiTranslate="bookmarkApp.data.bookmarks.columns.content">Content</span>
                   <fa-icon icon="sort"></fa-icon>
                 </th>
-                <th scope="col" jhiSortBy="profile.profileName">
-                  <span jhiTranslate="bookmarkApp.data.bookmarks.columns.profile">Profile</span>
-                  <fa-icon icon="sort"></fa-icon>
-                </th>
-                <th scope="col" jhiSortBy="categoru.categoryName">
-                  <span jhiTranslate="bookmarkApp.data.bookmarks.columns.category">Categoru</span>
+                <th scope="col" jhiSortBy="category.categoryName">
+                  <span jhiTranslate="bookmarkApp.data.bookmarks.columns.category">Category</span>
                   <fa-icon icon="sort"></fa-icon>
                 </th>
                 <th scope="col"></th>
@@ -156,13 +152,8 @@
                 <td jhiTranslate="{{ 'bookmarkApp.ItemType.' + item.type }}">{{ item.type }}</td>
                 <td>{{ item.content }}</td>
                 <td>
-                  <div *ngIf="item.profile">
-                    <a [routerLink]="['/profile', item.profile?.id, 'view']">{{ item.profile?.profileName }}</a>
-                  </div>
-                </td>
-                <td>
-                  <div *ngIf="item.categoru">
-                    <a [routerLink]="['/category', item.categoru?.id, 'view']">{{ item.categoru?.categoryName }}</a>
+                  <div *ngIf="item.category">
+                    <a [routerLink]="['/category', item.category?.id, 'view']">{{ item.category?.categoryName }}</a>
                   </div>
                 </td>
                 <td class="text-end">

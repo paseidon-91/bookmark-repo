@@ -53,12 +53,12 @@
           <td>{{ category.categoryName }}</td>
           <td>
             <div *ngIf="category.parent">
-              <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.id }}</a>
+              <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.categoryName }}</a>
             </div>
           </td>
           <td>
             <div *ngIf="category.profile">
-              <a [routerLink]="['/profile', category.profile?.id, 'view']">{{ category.profile?.id }}</a>
+              <a [routerLink]="['/profile', category.profile?.id, 'view']">{{ category.profile?.profileName }}</a>
             </div>
           </td>
           <td class="text-end">
