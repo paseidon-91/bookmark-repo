@@ -58,6 +58,7 @@ public class Profile implements Serializable {
     private Set<Category> categories = new HashSet<>();
 
     @ManyToOne
+    @JsonIgnoreProperties(value = { "profiles", "authorities", "persistentTokens" }, allowSetters = true)
     private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

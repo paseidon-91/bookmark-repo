@@ -55,4 +55,10 @@ public interface ProfileService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * Check existing another profiles for current user
+     * @return
+     */
+    boolean checkProfileIsLast(String userLogin);
 }

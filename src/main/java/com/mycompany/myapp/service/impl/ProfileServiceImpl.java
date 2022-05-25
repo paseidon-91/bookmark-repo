@@ -1,6 +1,5 @@
 package com.mycompany.myapp.service.impl;
 
-import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.ProfileRepository;
@@ -88,5 +87,12 @@ public class ProfileServiceImpl implements ProfileService {
     public void delete(Long id) {
         log.debug("Request to delete Profile : {}", id);
         profileRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean checkProfileIsLast(String userLogin) {
+        final User user = userService.getUserWithAuthoritiesByLogin(userLogin).orElseThrow(UserNotAuthorizedException::new);
+        log.debug("Request to get all Profiles");
+        return user.getProfiles() == null || user.getProfiles().size() < 2;
     }
 }

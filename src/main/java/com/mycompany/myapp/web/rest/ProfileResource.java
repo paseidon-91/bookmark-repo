@@ -69,7 +69,7 @@ public class ProfileResource {
     /**
      * {@code PUT  /profiles/:id} : Updates an existing profile.
      *
-     * @param id the id of the profile to save.
+     * @param id      the id of the profile to save.
      * @param profile the profile to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profile,
      * or with status {@code 400 (Bad Request)} if the profile is not valid,
@@ -101,7 +101,7 @@ public class ProfileResource {
     /**
      * {@code PATCH  /profiles/:id} : Partial updates given fields of an existing profile, field will ignore if it is null
      *
-     * @param id the id of the profile to save.
+     * @param id      the id of the profile to save.
      * @param profile the profile to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profile,
      * or with status {@code 400 (Bad Request)} if the profile is not valid,
@@ -170,6 +170,22 @@ public class ProfileResource {
     @DeleteMapping("/profiles/{id}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
         log.debug("REST request to delete Profile : {}", id);
+
+        Profile profile = profileService
+            .findOne(id)
+            .orElseThrow(() -> {
+                throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            });
+        if (profile.getUser() == null) throw new BadRequestAlertException(
+            "Нельзя удалить профиль без пользователя",
+            ENTITY_NAME,
+            "is_last"
+        );
+        if (profileService.checkProfileIsLast(profile.getUser().getLogin())) throw new BadRequestAlertException(
+            "У пользователя должен быть хотя бы 1 профиль",
+            ENTITY_NAME,
+            "is_last"
+        );
         profileService.delete(id);
         return ResponseEntity
             .noContent()
