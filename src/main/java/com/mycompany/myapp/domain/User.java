@@ -1,6 +1,7 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mycompany.myapp.config.Constants;
 import java.io.Serializable;
 import java.time.Instant;
@@ -97,6 +98,30 @@ public class User extends AbstractAuditingEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<PersistentToken> persistentTokens = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<Profile> profiles;
+
+    public User addProfile(Profile profile) {
+        this.profiles.add(profile);
+        profile.setUser(this);
+        return this;
+    }
+
+    public User removeProfile(Profile profile) {
+        this.profiles.remove(profile);
+        profile.setUser(null);
+        return this;
+    }
+
+    public User clearProfiles() {
+        if (profiles != null) for (Profile p : profiles) {
+            removeProfile(p);
+            p.setUser(null);
+        }
+        return this;
+    }
 
     public Long getId() {
         return id;
@@ -209,6 +234,14 @@ public class User extends AbstractAuditingEntity {
 
     public void setPersistentTokens(Set<PersistentToken> persistentTokens) {
         this.persistentTokens = persistentTokens;
+    }
+
+    public Set<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public void setProfiles(Set<Profile> profiles) {
+        this.profiles = profiles;
     }
 
     @Override

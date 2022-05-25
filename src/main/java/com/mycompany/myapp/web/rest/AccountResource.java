@@ -1,11 +1,18 @@
 package com.mycompany.myapp.web.rest;
 
+import static com.mycompany.myapp.domain.Category.DEFAULT_CATEGORY_NAME;
+import static com.mycompany.myapp.domain.Profile.DEFAULT_PROFILE_NAME;
+
+import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.PersistentToken;
+import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.PersistentTokenRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
+import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.service.MailService;
+import com.mycompany.myapp.service.ProfileService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.AdminUserDTO;
 import com.mycompany.myapp.service.dto.PasswordChangeDTO;
@@ -40,20 +47,24 @@ public class AccountResource {
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
     private final UserRepository userRepository;
-
+    private final ProfileService profileService;
+    private final CategoryService categoryService;
     private final UserService userService;
-
     private final MailService mailService;
 
     private final PersistentTokenRepository persistentTokenRepository;
 
     public AccountResource(
         UserRepository userRepository,
+        ProfileService profileService,
+        CategoryService categoryService,
         UserService userService,
         MailService mailService,
         PersistentTokenRepository persistentTokenRepository
     ) {
         this.userRepository = userRepository;
+        this.profileService = profileService;
+        this.categoryService = categoryService;
         this.userService = userService;
         this.mailService = mailService;
         this.persistentTokenRepository = persistentTokenRepository;
@@ -74,6 +85,8 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
+        Profile defaultProfile = profileService.save(new Profile(DEFAULT_PROFILE_NAME, true).setProfileUser(user));
+        categoryService.save(new Category(DEFAULT_CATEGORY_NAME, defaultProfile));
         mailService.sendActivationEmail(user);
     }
 

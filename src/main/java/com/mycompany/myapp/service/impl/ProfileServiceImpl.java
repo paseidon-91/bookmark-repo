@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service.impl;
 
+import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.ProfileRepository;
@@ -53,8 +54,8 @@ public class ProfileServiceImpl implements ProfileService {
                 if (profile.getProfileName() != null) {
                     existingProfile.setProfileName(profile.getProfileName());
                 }
-                if (profile.getUserId() != null) {
-                    existingProfile.setUserId(profile.getUserId());
+                if (profile.getUser() != null) {
+                    existingProfile.setUser(profile.getUser());
                 }
                 if (profile.getIsDefault() != null) {
                     existingProfile.setIsDefault(profile.getIsDefault());
@@ -68,11 +69,12 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional(readOnly = true)
     public Page<Profile> findAll(Pageable pageable) {
+        // TODO предварительно проверь роль юзера. Возможно, стоит вернуть лишь профили текущего юзера или все, для админа
+        //  вынести логику с проверкой юзера в отдельный метод
         final User user = userService.getUserWithAuthorities().orElseThrow(UserNotAuthorizedException::new);
         log.debug("Request to get all Profiles");
-        // TODO предварительно проверь роль юзера. Возможно, стоит вернуть лишь профили текущего юзера или все, для админа
-        return profileRepository.findAllByUserId(pageable, user.getId());
-        //        return profileRepository.findAll(pageable);
+        //        return profileRepository.findAllByUserId(pageable, user.getId());
+        return profileRepository.findAll(pageable);
     }
 
     @Override

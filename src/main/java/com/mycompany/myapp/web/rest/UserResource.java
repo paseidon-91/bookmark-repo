@@ -1,10 +1,17 @@
 package com.mycompany.myapp.web.rest;
 
+import static com.mycompany.myapp.domain.Category.DEFAULT_CATEGORY_NAME;
+import static com.mycompany.myapp.domain.Profile.DEFAULT_PROFILE_NAME;
+
 import com.mycompany.myapp.config.Constants;
+import com.mycompany.myapp.domain.Category;
+import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.service.MailService;
+import com.mycompany.myapp.service.ProfileService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.AdminUserDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -82,13 +89,21 @@ public class UserResource {
     private String applicationName;
 
     private final UserService userService;
-
+    private final ProfileService profileService;
+    private final CategoryService categoryService;
     private final UserRepository userRepository;
-
     private final MailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    public UserResource(
+        UserService userService,
+        ProfileService profileService,
+        CategoryService categoryService,
+        UserRepository userRepository,
+        MailService mailService
+    ) {
         this.userService = userService;
+        this.profileService = profileService;
+        this.categoryService = categoryService;
         this.userRepository = userRepository;
         this.mailService = mailService;
     }
@@ -119,6 +134,9 @@ public class UserResource {
             throw new EmailAlreadyUsedException();
         } else {
             User newUser = userService.createUser(userDTO);
+            Profile defaultProfile = profileService.save(new Profile(DEFAULT_PROFILE_NAME, true).setProfileUser(newUser));
+            categoryService.save(new Category(DEFAULT_CATEGORY_NAME, defaultProfile));
+
             mailService.sendCreationEmail(newUser);
             return ResponseEntity
                 .created(new URI("/api/admin/users/" + newUser.getLogin()))

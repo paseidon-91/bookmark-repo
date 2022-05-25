@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Profile;
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.ProfileRepository;
 import java.util.List;
 import java.util.Random;
@@ -35,6 +36,8 @@ class ProfileResourceIT {
 
     private static final Long DEFAULT_USER_ID = 1L;
     private static final Long UPDATED_USER_ID = 2L;
+    private static final User DEFAULT_USER;
+    private static final User UPDATED_USER;
 
     private static final Boolean DEFAULT_IS_DEFAULT = false;
     private static final Boolean UPDATED_IS_DEFAULT = true;
@@ -56,6 +59,13 @@ class ProfileResourceIT {
 
     private Profile profile;
 
+    static {
+        DEFAULT_USER = new User();
+        DEFAULT_USER.setId(DEFAULT_USER_ID);
+        UPDATED_USER = new User();
+        UPDATED_USER.setId(UPDATED_USER_ID);
+    }
+
     /**
      * Create an entity for this test.
      *
@@ -63,7 +73,7 @@ class ProfileResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Profile createEntity(EntityManager em) {
-        Profile profile = new Profile().profileName(DEFAULT_PROFILE_NAME).userId(DEFAULT_USER_ID).isDefault(DEFAULT_IS_DEFAULT);
+        Profile profile = new Profile().profileName(DEFAULT_PROFILE_NAME).setProfileUser(DEFAULT_USER).isDefault(DEFAULT_IS_DEFAULT);
         return profile;
     }
 
@@ -74,7 +84,7 @@ class ProfileResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Profile createUpdatedEntity(EntityManager em) {
-        Profile profile = new Profile().profileName(UPDATED_PROFILE_NAME).userId(UPDATED_USER_ID).isDefault(UPDATED_IS_DEFAULT);
+        Profile profile = new Profile().profileName(UPDATED_PROFILE_NAME).setProfileUser(UPDATED_USER).isDefault(UPDATED_IS_DEFAULT);
         return profile;
     }
 
@@ -102,7 +112,7 @@ class ProfileResourceIT {
         assertThat(profileList).hasSize(databaseSizeBeforeCreate + 1);
         Profile testProfile = profileList.get(profileList.size() - 1);
         assertThat(testProfile.getProfileName()).isEqualTo(DEFAULT_PROFILE_NAME);
-        assertThat(testProfile.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testProfile.getUser().getId()).isEqualTo(DEFAULT_USER_ID);
         assertThat(testProfile.getIsDefault()).isEqualTo(DEFAULT_IS_DEFAULT);
     }
 
@@ -142,7 +152,6 @@ class ProfileResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(profile.getId().intValue())))
             .andExpect(jsonPath("$.[*].profileName").value(hasItem(DEFAULT_PROFILE_NAME)))
-            .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.intValue())))
             .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())));
     }
 
@@ -159,7 +168,6 @@ class ProfileResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(profile.getId().intValue()))
             .andExpect(jsonPath("$.profileName").value(DEFAULT_PROFILE_NAME))
-            .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID.intValue()))
             .andExpect(jsonPath("$.isDefault").value(DEFAULT_IS_DEFAULT.booleanValue()));
     }
 
@@ -182,7 +190,7 @@ class ProfileResourceIT {
         Profile updatedProfile = profileRepository.findById(profile.getId()).get();
         // Disconnect from session so that the updates on updatedProfile are not directly saved in db
         em.detach(updatedProfile);
-        updatedProfile.profileName(UPDATED_PROFILE_NAME).userId(UPDATED_USER_ID).isDefault(UPDATED_IS_DEFAULT);
+        updatedProfile.profileName(UPDATED_PROFILE_NAME).setProfileUser(UPDATED_USER).isDefault(UPDATED_IS_DEFAULT);
 
         restProfileMockMvc
             .perform(
@@ -198,7 +206,7 @@ class ProfileResourceIT {
         assertThat(profileList).hasSize(databaseSizeBeforeUpdate);
         Profile testProfile = profileList.get(profileList.size() - 1);
         assertThat(testProfile.getProfileName()).isEqualTo(UPDATED_PROFILE_NAME);
-        assertThat(testProfile.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testProfile.getUser().getId()).isEqualTo(UPDATED_USER_ID);
         assertThat(testProfile.getIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
     }
 
@@ -274,7 +282,7 @@ class ProfileResourceIT {
         Profile partialUpdatedProfile = new Profile();
         partialUpdatedProfile.setId(profile.getId());
 
-        partialUpdatedProfile.profileName(UPDATED_PROFILE_NAME).userId(UPDATED_USER_ID).isDefault(UPDATED_IS_DEFAULT);
+        partialUpdatedProfile.profileName(UPDATED_PROFILE_NAME).setProfileUser(UPDATED_USER).isDefault(UPDATED_IS_DEFAULT);
 
         restProfileMockMvc
             .perform(
@@ -290,7 +298,7 @@ class ProfileResourceIT {
         assertThat(profileList).hasSize(databaseSizeBeforeUpdate);
         Profile testProfile = profileList.get(profileList.size() - 1);
         assertThat(testProfile.getProfileName()).isEqualTo(UPDATED_PROFILE_NAME);
-        assertThat(testProfile.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testProfile.getUser().getId()).isEqualTo(UPDATED_USER_ID);
         assertThat(testProfile.getIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
     }
 
@@ -306,7 +314,7 @@ class ProfileResourceIT {
         Profile partialUpdatedProfile = new Profile();
         partialUpdatedProfile.setId(profile.getId());
 
-        partialUpdatedProfile.profileName(UPDATED_PROFILE_NAME).userId(UPDATED_USER_ID).isDefault(UPDATED_IS_DEFAULT);
+        partialUpdatedProfile.profileName(UPDATED_PROFILE_NAME).setProfileUser(UPDATED_USER).isDefault(UPDATED_IS_DEFAULT);
 
         restProfileMockMvc
             .perform(
@@ -322,7 +330,7 @@ class ProfileResourceIT {
         assertThat(profileList).hasSize(databaseSizeBeforeUpdate);
         Profile testProfile = profileList.get(profileList.size() - 1);
         assertThat(testProfile.getProfileName()).isEqualTo(UPDATED_PROFILE_NAME);
-        assertThat(testProfile.getUserId()).isEqualTo(UPDATED_USER_ID);
+        assertThat(testProfile.getUser().getId()).isEqualTo(UPDATED_USER_ID);
         assertThat(testProfile.getIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
     }
 

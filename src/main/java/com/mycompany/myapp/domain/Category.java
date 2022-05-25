@@ -16,7 +16,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Category implements Serializable {
 
+    public static String DEFAULT_CATEGORY_NAME = "Все закладки";
+
     private static final long serialVersionUID = 1L;
+
+    public Category() {}
+
+    public Category(String categoryName, Profile profile) {
+        this.categoryName = categoryName;
+        this.profile = profile;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")

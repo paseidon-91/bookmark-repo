@@ -16,7 +16,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Profile implements Serializable {
 
+    public static String DEFAULT_PROFILE_NAME = "Default";
+
     private static final long serialVersionUID = 1L;
+
+    public Profile() {}
+
+    public Profile(String profileName, Boolean isDefault) {
+        this.profileName = profileName;
+        this.isDefault = isDefault;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -26,9 +35,6 @@ public class Profile implements Serializable {
 
     @Column(name = "profile_name")
     private String profileName;
-
-    @Column(name = "user_id")
-    private Long userId;
 
     @Column(name = "is_default")
     private Boolean isDefault;
@@ -50,6 +56,9 @@ public class Profile implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "items", "parent", "profile" }, allowSetters = true)
     private Set<Category> categories = new HashSet<>();
+
+    @ManyToOne
+    private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -79,17 +88,9 @@ public class Profile implements Serializable {
         this.profileName = profileName;
     }
 
-    public Long getUserId() {
-        return this.userId;
-    }
-
-    public Profile userId(Long userId) {
-        this.setUserId(userId);
+    public Profile setProfileUser(User user) {
+        this.setUser(user);
         return this;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Boolean getIsDefault() {
@@ -136,6 +137,14 @@ public class Profile implements Serializable {
         return this;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -161,7 +170,7 @@ public class Profile implements Serializable {
         return "Profile{" +
             "id=" + getId() +
             ", profileName='" + getProfileName() + "'" +
-            ", userId=" + getUserId() +
+            ", userId=" + getUser() +
             ", isDefault='" + getIsDefault() + "'" +
             "}";
     }

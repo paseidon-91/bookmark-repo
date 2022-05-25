@@ -2,6 +2,7 @@ package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.Authority;
+import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.AuthorityRepository;
 import com.mycompany.myapp.repository.PersistentTokenRepository;
@@ -145,6 +146,7 @@ public class UserService {
         if (existingUser.isActivated()) {
             return false;
         }
+        existingUser.clearProfiles();
         userRepository.delete(existingUser);
         userRepository.flush();
         this.clearUserCaches(existingUser);
@@ -334,6 +336,7 @@ public class UserService {
 
     /**
      * Gets a list of all the authorities.
+     *
      * @return a list of all the authorities.
      */
     @Transactional(readOnly = true)
