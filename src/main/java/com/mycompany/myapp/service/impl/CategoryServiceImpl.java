@@ -1,9 +1,9 @@
 package com.mycompany.myapp.service.impl;
 
 import com.mycompany.myapp.domain.Category;
-import com.mycompany.myapp.exception.BusinessException;
 import com.mycompany.myapp.repository.CategoryRepository;
 import com.mycompany.myapp.service.CategoryService;
+import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +37,10 @@ public class CategoryServiceImpl implements CategoryService {
     public Category update(Category category) {
         log.debug("Request to save Category : {}", category);
         // TODO Сделать проверку цикличной
-        if (category.getParent() != null && category.getId().equals(category.getParent().getId())) throw new BusinessException(
-            "Неверно указана родительская категория"
+        if (category.getParent() != null && category.getId().equals(category.getParent().getId())) throw new BadRequestAlertException(
+            "Неверно указана родительская категория",
+            "Категория",
+            "category_parent_ex"
         );
         return categoryRepository.save(category);
     }

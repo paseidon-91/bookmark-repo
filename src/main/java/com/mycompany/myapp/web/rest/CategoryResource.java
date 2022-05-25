@@ -69,7 +69,7 @@ public class CategoryResource {
     /**
      * {@code PUT  /categories/:id} : Updates an existing category.
      *
-     * @param id the id of the category to save.
+     * @param id       the id of the category to save.
      * @param category the category to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated category,
      * or with status {@code 400 (Bad Request)} if the category is not valid,
@@ -103,7 +103,7 @@ public class CategoryResource {
     /**
      * {@code PATCH  /categories/:id} : Partial updates given fields of an existing category, field will ignore if it is null
      *
-     * @param id the id of the category to save.
+     * @param id       the id of the category to save.
      * @param category the category to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated category,
      * or with status {@code 400 (Bad Request)} if the category is not valid,
@@ -172,6 +172,13 @@ public class CategoryResource {
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         log.debug("REST request to delete Category : {}", id);
+        Category category = categoryService
+            .findOne(id)
+            .orElseThrow(() -> {
+                throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            });
+        if (category.getParent() == null) throw new BadRequestAlertException("Нельзя удалить корневую категорию", ENTITY_NAME, "is_last");
+
         categoryService.delete(id);
         return ResponseEntity
             .noContent()
