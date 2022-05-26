@@ -1,6 +1,6 @@
 package com.mycompany.myapp.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;

@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.Profile;
+import com.mycompany.myapp.domain.User;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,4 +62,12 @@ public interface ProfileService {
      * @return
      */
     boolean checkProfileIsLast(String userLogin);
+
+    /**
+     * Check existing another profiles for current user
+     * @return
+     */
+    Profile changeDefaultProfile(Profile newDefaultProfile);
+
+    Profile getDefaultProfile(User user);
 }

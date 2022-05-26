@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service.impl;
 
+import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.ProfileRepository;
@@ -34,6 +35,11 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Profile save(Profile profile) {
         log.debug("Request to save Profile : {}", profile);
+        profileRepository.save(profile);
+        if (profile.getUser() == null) {
+            User user = userService.getUserWithAuthorities().orElseThrow(UserNotAuthorizedException::new).addProfile(profile);
+            userService.save(user);
+        }
         return profileRepository.save(profile);
     }
 
@@ -94,5 +100,29 @@ public class ProfileServiceImpl implements ProfileService {
         final User user = userService.getUserWithAuthoritiesByLogin(userLogin).orElseThrow(UserNotAuthorizedException::new);
         log.debug("Request to get all Profiles");
         return user.getProfiles() == null || user.getProfiles().size() < 2;
+    }
+
+    @Override
+    public Profile changeDefaultProfile(Profile newDefaultProfile) {
+        User user = userService.findById(newDefaultProfile.getUser().getId()).orElseThrow();
+        getDefaultProfile(user).setIsDefault(false);
+        newDefaultProfile.setIsDefault(true);
+        userService.save(user);
+        return newDefaultProfile;
+    }
+
+    @Override
+    public Profile getDefaultProfile(User user) {
+        log.debug("Request to find root profile of User: {}", user.getId());
+        Profile result = null;
+        for (Profile profile : user.getProfiles()) {
+            if (profile.getIsDefault()) {
+                if (result == null) result = profile; else throw new RuntimeException(
+                    "TODO заменить на нормальное исключение. Найдено более одного профиля по умолчанию"
+                );
+            }
+        }
+        if (result == null) throw new RuntimeException("TODO заменить на нормальное исключение. Не найдено ни одного профиля по умолчанию");
+        return result;
     }
 }

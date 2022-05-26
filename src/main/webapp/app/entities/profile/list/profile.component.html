@@ -51,7 +51,7 @@
             <a [routerLink]="['/profile', profile.id, 'view']">{{ profile.id }}</a>
           </td>
           <td>{{ profile.profileName }}</td>
-          <td>{{ profile.userId }}</td>
+          <td>{{ profile.user?.id }}</td>
           <td>{{ profile.isDefault }}</td>
           <td class="text-end">
             <div class="btn-group">
