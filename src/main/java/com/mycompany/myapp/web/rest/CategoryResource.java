@@ -59,6 +59,10 @@ public class CategoryResource {
         if (category.getId() != null) {
             throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (category.getParent() == null) throw new RuntimeException(
+            "TODO заменить на нормальное исключение. Корневая категория уже существует"
+        );
+
         Category result = categoryService.save(category);
         return ResponseEntity
             .created(new URI("/api/categories/" + result.getId()))
@@ -92,6 +96,10 @@ public class CategoryResource {
         if (!categoryRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+
+        if (category.getParent() == null) throw new RuntimeException(
+            "TODO заменить на нормальное исключение. Корневая категория уже существует"
+        );
 
         Category result = categoryService.update(category);
         return ResponseEntity
@@ -127,6 +135,10 @@ public class CategoryResource {
         if (!categoryRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+
+        if (category.getParent() == null) throw new RuntimeException(
+            "TODO заменить на нормальное исключение. Корневая категория уже существует"
+        );
 
         Optional<Category> result = categoryService.partialUpdate(category);
 

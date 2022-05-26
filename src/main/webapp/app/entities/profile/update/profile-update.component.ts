@@ -67,7 +67,7 @@ export class ProfileUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: profile.id,
       profileName: profile.profileName,
-      userId: profile.userId,
+      userId: profile.user?.id,
       isDefault: profile.isDefault,
     });
   }
@@ -77,7 +77,9 @@ export class ProfileUpdateComponent implements OnInit {
       ...new Profile(),
       id: this.editForm.get(['id'])!.value,
       profileName: this.editForm.get(['profileName'])!.value,
-      userId: this.editForm.get(['userId'])!.value,
+      user: {
+        id: this.editForm.get(['userId'])!.value,
+      },
       isDefault: this.editForm.get(['isDefault'])!.value,
     };
   }

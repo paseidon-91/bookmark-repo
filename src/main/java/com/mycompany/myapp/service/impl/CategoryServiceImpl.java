@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service.impl;
 
 import com.mycompany.myapp.domain.Category;
+import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.repository.CategoryRepository;
 import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -79,5 +80,19 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(Long id) {
         log.debug("Request to delete Category : {}", id);
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public Category getRootCategory(Profile profile) {
+        log.debug("Request to find root category in Profile: {}", profile.getId());
+        Category result = null;
+        for (Category category : profile.getCategories()) {
+            if (category.getParent() == null) {
+                if (result == null) result = category; else throw new RuntimeException(
+                    "TODO заменить на нормальное исключение. Найдено более одной корневой категории"
+                );
+            }
+        }
+        return result;
     }
 }

@@ -1,21 +1,27 @@
 package com.mycompany.myapp.web.rest;
 
+import static com.mycompany.myapp.domain.Category.DEFAULT_CATEGORY_NAME;
+
+import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.Profile;
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.ProfileRepository;
+import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.service.ProfileService;
+import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,11 +44,19 @@ public class ProfileResource {
     private String applicationName;
 
     private final ProfileService profileService;
-
+    private final CategoryService categoryService;
+    private final UserService userService;
     private final ProfileRepository profileRepository;
 
-    public ProfileResource(ProfileService profileService, ProfileRepository profileRepository) {
+    public ProfileResource(
+        ProfileService profileService,
+        CategoryService categoryService,
+        UserService userService,
+        ProfileRepository profileRepository
+    ) {
         this.profileService = profileService;
+        this.categoryService = categoryService;
+        this.userService = userService;
         this.profileRepository = profileRepository;
     }
 
@@ -60,6 +74,7 @@ public class ProfileResource {
             throw new BadRequestAlertException("A new profile cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Profile result = profileService.save(profile);
+        categoryService.save(new Category(DEFAULT_CATEGORY_NAME, result));
         return ResponseEntity
             .created(new URI("/api/profiles/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -89,6 +104,15 @@ public class ProfileResource {
 
         if (!profileRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        // TODO унести в сервис
+        User user = userService.findById(profile.getUser().getId()).orElseThrow();
+        Profile oldDefault = profileService.getDefaultProfile(user);
+        if (profile.getIsDefault() && !id.equals(oldDefault.getId())) {
+            profileService.changeDefaultProfile(profile);
+        } else if (!profile.getIsDefault()) {
+            throw new RuntimeException("TODO заменить на нормальное исключение. Должен быть хотя бы один профиль по умолчанию");
         }
 
         Profile result = profileService.update(profile);
@@ -124,6 +148,13 @@ public class ProfileResource {
 
         if (!profileRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        // TODO унести в сервис
+        Profile oldDefault = profileService.getDefaultProfile(profile.getUser());
+        if (profile.getIsDefault() && !id.equals(oldDefault.getId())) {
+            profileService.changeDefaultProfile(profile);
+        } else if (!profile.getIsDefault()) {
+            throw new RuntimeException("TODO заменить на нормальное исключение. Должен быть хотя бы один профиль по умолчанию");
         }
 
         Optional<Profile> result = profileService.partialUpdate(profile);
@@ -186,7 +217,12 @@ public class ProfileResource {
             ENTITY_NAME,
             "is_last"
         );
+        if (profile.getIsDefault()) {
+            Profile newDefault = profile.getUser().getProfiles().stream().filter(p -> !p.getIsDefault()).findFirst().orElseThrow();
+            profileService.changeDefaultProfile(newDefault);
+        }
         profileService.delete(id);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

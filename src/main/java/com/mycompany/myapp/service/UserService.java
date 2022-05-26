@@ -350,4 +350,17 @@ public class UserService {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
     }
+
+    /**
+     * Save object as simple entity
+     * @param user
+     * @return
+     */
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
 }
