@@ -6,15 +6,15 @@ import { ICategory } from '../entities/category/category.model';
 import { IProfile } from '../entities/profile/profile.model';
 
 import { ASC, DESC, ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { CategoryService } from '../entities/category/service/category.service';
+import { CategoryService, EntityArrayResponseType } from '../entities/category/service/category.service';
 import { ParseLinks } from 'app/core/util/parse-links.service';
 import { FormBuilder } from '@angular/forms';
 import { IItem } from '../entities/item/item.model';
-import { map } from 'rxjs/operators';
 import { ProfileService } from '../entities/profile/service/profile.service';
 import { ItemService } from '../entities/item/service/item.service';
 import { ItemDeleteDialogComponent } from '../entities/item/delete/item-delete-dialog.component';
 import { isPresent } from '../core/util/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'jhi-bookmark',
@@ -23,12 +23,11 @@ import { isPresent } from '../core/util/operators';
 export class BookmarksComponent implements OnInit {
   // categories: ICategory[];
   selectedCategory: any = {};
-  selectedProfile: IProfile | null = {};
+  selectedProfile: IProfile | null | undefined = {};
   textSearch: string;
   profilesSharedCollection: IProfile[] = [];
   categoriesSharedCollection: any[] = [];
   items: IItem[] = [];
-  // todo разбить на 3 флага для загрузки разных элементов
   isProfilesLoading = false;
   isCategoriesLoading = false;
   isItemsLoading = false;
@@ -37,10 +36,6 @@ export class BookmarksComponent implements OnInit {
   page: number;
   predicate: string;
   ascending: boolean;
-  editForm = this.fb.group({
-    profile: [],
-    category: [],
-  });
 
   constructor(
     protected categoryService: CategoryService,
@@ -61,32 +56,43 @@ export class BookmarksComponent implements OnInit {
     this.textSearch = '';
   }
 
-  loadCategories(): void {
+  loadCategories(profile: IProfile | null | undefined): void {
     this.isCategoriesLoading = true;
-
-    this.categoryService
-      .query({
+    let body;
+    if (profile?.id) {
+      body = {
         page: 0,
         size: 99999,
         sort: ['categoryName,asc', 'id,asc'],
-      })
-      .subscribe({
-        next: (res: HttpResponse<ICategory[]>) => {
-          this.isCategoriesLoading = false;
-          if (res.body) {
-            for (const d of res.body) {
-              this.categoriesSharedCollection.push(d);
-            }
-            this.categoriesSharedCollection = this.categoryService.convertAll(
-              this.categoryService.parseCategoryToTree(this.categoriesSharedCollection)
-            );
-            this.test();
+        profile: profile.id,
+      };
+    } else {
+      body = {
+        page: 0,
+        size: 99999,
+        sort: ['categoryName,asc', 'id,asc'],
+      };
+    }
+
+    this.categoryService.query(body).subscribe({
+      next: (res: HttpResponse<ICategory[]>) => {
+        this.isCategoriesLoading = false;
+        if (res.body) {
+          for (const d of res.body) {
+            this.categoriesSharedCollection.push(d);
           }
-        },
-        error: () => {
-          this.isCategoriesLoading = false;
-        },
-      });
+          this.categoriesSharedCollection = this.categoryService.convertAll(
+            this.categoryService.parseCategoryToTree(this.categoriesSharedCollection)
+          );
+          this.selectedCategory.activeNodeIds = this.categoriesSharedCollection[0].id;
+          this.loadFilteredItems();
+          this.test();
+        }
+      },
+      error: () => {
+        this.isCategoriesLoading = false;
+      },
+    });
   }
 
   loadProfiles(): void {
@@ -105,6 +111,8 @@ export class BookmarksComponent implements OnInit {
             for (const d of res.body) {
               this.profilesSharedCollection.push(d);
             }
+            this.selectedProfile = this.profilesSharedCollection.find(p => p.isDefault);
+            this.loadCategories(this.selectedProfile);
           }
         },
         error: () => {
@@ -113,8 +121,23 @@ export class BookmarksComponent implements OnInit {
       });
   }
 
-  loadItems(): void {
+  loadItems(category: any): void {
     this.isItemsLoading = true;
+    let body;
+    if (category?.focusedNodeId) {
+      body = {
+        page: 0,
+        size: 99999,
+        sort: ['categoryName,asc', 'id,asc'],
+        category: category.focusedNodeId,
+      };
+    } else {
+      body = {
+        page: 0,
+        size: 99999,
+        sort: ['categoryName,asc', 'id,asc'],
+      };
+    }
 
     this.itemService
       .query({
@@ -140,7 +163,6 @@ export class BookmarksComponent implements OnInit {
     this.itemService
       .queryFiltered({
         searchText: this.textSearch ? this.textSearch : '',
-        profile: isPresent(this.selectedProfile) ? (isPresent(this.selectedProfile.id) ? this.selectedProfile.id : '') : '',
         category: isPresent(this.selectedCategory)
           ? isPresent(this.selectedCategory.focusedNodeId)
             ? this.selectedCategory.focusedNodeId
@@ -166,7 +188,7 @@ export class BookmarksComponent implements OnInit {
     this.page = 0;
     this.categoriesSharedCollection = [];
     this.selectedCategory = {};
-    this.loadCategories();
+    this.loadCategories(this.selectedProfile);
   }
 
   resetProfiles(): void {
@@ -180,19 +202,18 @@ export class BookmarksComponent implements OnInit {
     this.page = 0;
     this.items = [];
     this.textSearch = '';
-    this.loadItems();
+    this.loadFilteredItems();
   }
 
   loadPage(page: number): void {
     this.page = page;
-    this.loadItems();
+    this.loadFilteredItems();
   }
 
   ngOnInit(): void {
     this.loadProfiles();
-    this.loadCategories();
-    this.loadItems();
-    // this.loadRelationshipsOptions();
+    // this.loadCategories(this.selectedProfile);
+    // this.loadItems(this.selectedCategory);
   }
 
   trackProfileById(_index: number, item: IProfile): number {
@@ -221,24 +242,25 @@ export class BookmarksComponent implements OnInit {
   }
 
   test(): void {
+    window.console.log('test check');
     window.console.log(this.selectedCategory);
     window.console.log(this.selectedProfile);
     window.console.log(this.textSearch);
   }
 
   getCategoryQueryParams(): any {
-    if (this.selectedProfile?.id && this.selectedCategory.focusedNodeId) {
+    if (this.selectedProfile?.id && this.selectedCategory?.focusedNodeId) {
       return {
         profile: this.selectedProfile.id.toString(),
-        parentId: this.selectedCategory.focusedNodeId.toString(),
+        parentId: this.selectedCategory?.focusedNodeId.toString(),
       };
     } else if (this.selectedProfile?.id) {
       return {
         profile: this.selectedProfile.id.toString(),
       };
-    } else if (this.selectedCategory.focusedNodeId) {
+    } else if (this.selectedCategory?.focusedNodeId) {
       return {
-        parentId: this.selectedCategory.focusedNodeId.toString(),
+        parentId: this.selectedCategory?.focusedNodeId.toString(),
       };
     } else {
       return {};
@@ -246,9 +268,9 @@ export class BookmarksComponent implements OnInit {
   }
 
   getItemQueryParams(): any {
-    if (this.selectedCategory.focusedNodeId) {
+    if (this.selectedCategory?.focusedNodeId) {
       return {
-        category: this.selectedCategory.focusedNodeId.toString(),
+        category: this.selectedCategory?.focusedNodeId.toString(),
       };
     } else {
       return {};
