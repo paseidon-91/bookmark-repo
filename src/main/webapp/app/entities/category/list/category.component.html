@@ -58,7 +58,9 @@
           </td>
           <td>
             <div *ngIf="category.profile">
-              <a [routerLink]="['/profile', category.profile?.id, 'view']">{{ category.profile?.profileName }}</a>
+              <a [routerLink]="['/profile', category.profile?.id, 'view']"
+                >{{ category.profile?.user?.login }}: {{ category.profile?.profileName }}</a
+              >
             </div>
           </td>
           <td class="text-end">
