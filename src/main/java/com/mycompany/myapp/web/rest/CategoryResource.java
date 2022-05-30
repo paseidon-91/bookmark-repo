@@ -1,8 +1,10 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Category;
+import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.repository.CategoryRepository;
 import com.mycompany.myapp.service.CategoryService;
+import com.mycompany.myapp.service.ProfileService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,11 +13,11 @@ import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,11 +40,12 @@ public class CategoryResource {
     private String applicationName;
 
     private final CategoryService categoryService;
-
+    private final ProfileService profileService;
     private final CategoryRepository categoryRepository;
 
-    public CategoryResource(CategoryService categoryService, CategoryRepository categoryRepository) {
+    public CategoryResource(CategoryService categoryService, ProfileService profileService, CategoryRepository categoryRepository) {
         this.categoryService = categoryService;
+        this.profileService = profileService;
         this.categoryRepository = categoryRepository;
     }
 
@@ -155,9 +158,17 @@ public class CategoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of categories in body.
      */
     @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getAllCategories(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<Category>> getAllCategories(
+        @ParameterObject Pageable pageable,
+        @RequestParam(required = false) Profile profile
+    ) {
         log.debug("REST request to get a page of Categories");
-        Page<Category> page = categoryService.findAll(pageable);
+        Page<Category> page = null;
+        if (profile != null && profile.getId() != null) {
+            page = categoryService.findByProfile(pageable, profile);
+        } else {
+            page = categoryService.findAll(pageable);
+        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -173,6 +184,20 @@ public class CategoryResource {
         log.debug("REST request to get Category : {}", id);
         Optional<Category> category = categoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(category);
+    }
+
+    /**
+     * {@code GET  /categories/default/{profileId}} : get root category.
+     *
+     * @param id the id of the category to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the category, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/categories/default/:profileId")
+    public ResponseEntity<Category> getDefaultCategory(@PathVariable Long profileId) {
+        log.debug("REST request to get default Category");
+        Profile profile = profileService.findOne(profileId).orElseThrow();
+        Category category = categoryService.getRootCategory(profile);
+        return ResponseUtil.wrapOrNotFound(Optional.of(category));
     }
 
     /**

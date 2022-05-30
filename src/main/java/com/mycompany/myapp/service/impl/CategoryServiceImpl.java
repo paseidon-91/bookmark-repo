@@ -6,6 +6,7 @@ import com.mycompany.myapp.repository.CategoryRepository;
 import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.util.Optional;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -70,6 +71,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Page<Category> findByProfile(Pageable pageable, Profile profile) {
+        log.debug("Request to get all Categories for profile");
+        return categoryRepository.findAllByProfile(pageable, profile);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Optional<Category> findOne(Long id) {
         log.debug("Request to get Category : {}", id);
@@ -86,6 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getRootCategory(Profile profile) {
         log.debug("Request to find root category in Profile: {}", profile.getId());
         Category result = null;
+        Hibernate.initialize(profile);
         for (Category category : profile.getCategories()) {
             if (category.getParent() == null) {
                 if (result == null) result = category; else throw new RuntimeException(

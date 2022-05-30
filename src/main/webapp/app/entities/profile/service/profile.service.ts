@@ -32,6 +32,10 @@ export class ProfileService {
     return this.http.get<IProfile>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  findDefault(): Observable<EntityResponseType> {
+    return this.http.get<IProfile>(`${this.resourceUrl}/default`, { observe: 'response' });
+  }
+
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IProfile[]>(this.resourceUrl, { params: options, observe: 'response' });

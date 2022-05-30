@@ -43,6 +43,14 @@ public interface CategoryService {
     Page<Category> findAll(Pageable pageable);
 
     /**
+     * Get all the categories for profile.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<Category> findByProfile(Pageable pageable, Profile profile);
+
+    /**
      * Get the "id" category.
      *
      * @param id the id of the entity.

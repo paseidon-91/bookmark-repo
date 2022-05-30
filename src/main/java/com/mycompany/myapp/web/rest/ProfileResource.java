@@ -193,6 +193,19 @@ public class ProfileResource {
     }
 
     /**
+     * {@code GET  /profiles/default} : get default profile.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the profile, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/profiles/default")
+    public ResponseEntity<Profile> getDefaultProfile() {
+        log.debug("REST request to get default Profile");
+        User user = userService.getUserWithAuthorities().orElseThrow();
+        Profile profile = profileService.getDefaultProfile(user);
+        return ResponseUtil.wrapOrNotFound(Optional.of(profile));
+    }
+
+    /**
      * {@code DELETE  /profiles/:id} : delete the "id" profile.
      *
      * @param id the id of the profile to delete.

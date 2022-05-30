@@ -6,15 +6,15 @@ import { ICategory } from '../entities/category/category.model';
 import { IProfile } from '../entities/profile/profile.model';
 
 import { ASC, DESC, ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { CategoryService } from '../entities/category/service/category.service';
+import { CategoryService, EntityArrayResponseType } from '../entities/category/service/category.service';
 import { ParseLinks } from 'app/core/util/parse-links.service';
 import { FormBuilder } from '@angular/forms';
 import { IItem } from '../entities/item/item.model';
-import { map } from 'rxjs/operators';
 import { ProfileService } from '../entities/profile/service/profile.service';
 import { ItemService } from '../entities/item/service/item.service';
 import { ItemDeleteDialogComponent } from '../entities/item/delete/item-delete-dialog.component';
 import { isPresent } from '../core/util/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'jhi-bookmark',
@@ -23,12 +23,11 @@ import { isPresent } from '../core/util/operators';
 export class BookmarksComponent implements OnInit {
   // categories: ICategory[];
   selectedCategory: any = {};
-  selectedProfile: IProfile | null = {};
+  selectedProfile: IProfile | null | undefined = {};
   textSearch: string;
   profilesSharedCollection: IProfile[] = [];
   categoriesSharedCollection: any[] = [];
   items: IItem[] = [];
-  // todo разбить на 3 флага для загрузки разных элементов
   isProfilesLoading = false;
   isCategoriesLoading = false;
   isItemsLoading = false;
@@ -37,10 +36,6 @@ export class BookmarksComponent implements OnInit {
   page: number;
   predicate: string;
   ascending: boolean;
-  editForm = this.fb.group({
-    profile: [],
-    category: [],
-  });
 
   constructor(
     protected categoryService: CategoryService,
@@ -50,7 +45,6 @@ export class BookmarksComponent implements OnInit {
     protected parseLinks: ParseLinks,
     protected fb: FormBuilder
   ) {
-    this.categoriesSharedCollection = [];
     this.itemsPerPage = ITEMS_PER_PAGE;
     this.page = 0;
     this.links = {
@@ -61,35 +55,8 @@ export class BookmarksComponent implements OnInit {
     this.textSearch = '';
   }
 
-  loadCategories(): void {
-    this.isCategoriesLoading = true;
-
-    this.categoryService
-      .query({
-        page: 0,
-        size: 99999,
-        sort: ['categoryName,asc', 'id,asc'],
-      })
-      .subscribe({
-        next: (res: HttpResponse<ICategory[]>) => {
-          this.isCategoriesLoading = false;
-          if (res.body) {
-            for (const d of res.body) {
-              this.categoriesSharedCollection.push(d);
-            }
-            this.categoriesSharedCollection = this.categoryService.convertAll(
-              this.categoryService.parseCategoryToTree(this.categoriesSharedCollection)
-            );
-            this.test();
-          }
-        },
-        error: () => {
-          this.isCategoriesLoading = false;
-        },
-      });
-  }
-
   loadProfiles(): void {
+    window.console.log('check - loadProfiles');
     this.isProfilesLoading = true;
 
     this.profileService
@@ -105,6 +72,9 @@ export class BookmarksComponent implements OnInit {
             for (const d of res.body) {
               this.profilesSharedCollection.push(d);
             }
+            this.selectedProfile = null;
+            this.selectedProfile = this.profilesSharedCollection.find(p => p.isDefault);
+            this.loadCategories(this.selectedProfile);
           }
         },
         error: () => {
@@ -113,34 +83,96 @@ export class BookmarksComponent implements OnInit {
       });
   }
 
-  loadItems(): void {
-    this.isItemsLoading = true;
+  loadCategories(profile: IProfile | null | undefined): void {
+    window.console.log('check - loadCategories');
+    this.isCategoriesLoading = true;
+    let body;
+    if (profile?.id) {
+      body = {
+        page: 0,
+        size: 99999,
+        sort: ['categoryName,asc', 'id,asc'],
+        profile: profile.id,
+      };
+    } else {
+      body = {
+        page: 0,
+        size: 99999,
+        sort: ['categoryName,asc', 'id,asc'],
+      };
+    }
 
-    this.itemService
-      .query({
-        page: this.page,
-        size: this.itemsPerPage,
-        // sort: this.sort('title'),
-        sort: this.sort(),
-      })
-      .subscribe({
-        next: (res: HttpResponse<IItem[]>) => {
-          this.isItemsLoading = false;
-          this.paginateItems(res.body, res.headers);
-        },
-        error: () => {
-          this.isItemsLoading = false;
-        },
-      });
+    this.categoryService.query(body).subscribe({
+      next: (res: HttpResponse<ICategory[]>) => {
+        this.isCategoriesLoading = false;
+        if (res.body) {
+          for (const d of res.body) {
+            this.categoriesSharedCollection.push(d);
+          }
+          this.categoriesSharedCollection = this.categoryService.convertAll(
+            this.categoryService.parseCategoryToTree(this.categoriesSharedCollection)
+          );
+          // todo сделать выбор дефолтной категории (1й в списке) правильно
+          //  из-за обнуления this.selectedCategory спамится 2 запроса но выделяется нода по дефолту
+          //  надо это победить и уйти от костыля
+          this.selectedCategory = {};
+          this.items = [];
+          if (this.categoriesSharedCollection.length > 0) {
+            this.selectedCategory.focusedNodeId = this.categoriesSharedCollection[0].id;
+            this.loadFilteredItems();
+          }
+        }
+      },
+      error: () => {
+        this.isCategoriesLoading = false;
+      },
+    });
   }
 
+  // loadItems(category: any): void {
+  //   this.isItemsLoading = true;
+  //   let body;
+  //   if (category?.focusedNodeId) {
+  //     body = {
+  //       page: 0,
+  //       size: 99999,
+  //       sort: ['categoryName,asc', 'id,asc'],
+  //       category: category.focusedNodeId,
+  //     };
+  //   } else {
+  //     body = {
+  //       page: 0,
+  //       size: 99999,
+  //       sort: ['categoryName,asc', 'id,asc'],
+  //     };
+  //   }
+  //
+  //   this.itemService
+  //     .query({
+  //       page: this.page,
+  //       size: this.itemsPerPage,
+  //       // sort: this.sort('title'),
+  //       sort: this.sort(),
+  //     })
+  //     .subscribe({
+  //       next: (res: HttpResponse<IItem[]>) => {
+  //         this.isItemsLoading = false;
+  //         this.paginateItems(res.body, res.headers);
+  //       },
+  //       error: () => {
+  //         this.isItemsLoading = false;
+  //       },
+  //     });
+  // }
+
   loadFilteredItems(): void {
+    this.test();
+    window.console.log('check - loadFilteredItems');
     this.isItemsLoading = true;
 
     this.itemService
       .queryFiltered({
         searchText: this.textSearch ? this.textSearch : '',
-        profile: isPresent(this.selectedProfile) ? (isPresent(this.selectedProfile.id) ? this.selectedProfile.id : '') : '',
         category: isPresent(this.selectedCategory)
           ? isPresent(this.selectedCategory.focusedNodeId)
             ? this.selectedCategory.focusedNodeId
@@ -163,13 +195,15 @@ export class BookmarksComponent implements OnInit {
   }
 
   resetCategories(): void {
+    window.console.log('check - resetCategories');
     this.page = 0;
     this.categoriesSharedCollection = [];
-    this.selectedCategory = {};
-    this.loadCategories();
+    // this.selectedCategory = {};
+    this.loadCategories(this.selectedProfile);
   }
 
   resetProfiles(): void {
+    window.console.log('check - resetProfiles');
     this.page = 0;
     this.profilesSharedCollection = [];
     this.selectedProfile = {};
@@ -177,22 +211,24 @@ export class BookmarksComponent implements OnInit {
   }
 
   resetItems(): void {
+    window.console.log('check - resetItems');
     this.page = 0;
     this.items = [];
     this.textSearch = '';
-    this.loadItems();
+    this.loadFilteredItems();
   }
 
   loadPage(page: number): void {
+    window.console.log('check - loadPage');
     this.page = page;
-    this.loadItems();
+    this.loadFilteredItems();
   }
 
   ngOnInit(): void {
+    window.console.log('check - init');
     this.loadProfiles();
-    this.loadCategories();
-    this.loadItems();
-    // this.loadRelationshipsOptions();
+    // this.loadCategories(this.selectedProfile);
+    // this.loadItems(this.selectedCategory);
   }
 
   trackProfileById(_index: number, item: IProfile): number {
@@ -204,9 +240,15 @@ export class BookmarksComponent implements OnInit {
   }
 
   refreshItems(): void {
-    this.test();
+    window.console.log('check - refresh items');
     this.items = [];
     this.loadFilteredItems();
+  }
+
+  onProfileChange(): void {
+    window.console.log('check - profile changed');
+    this.categoriesSharedCollection = [];
+    this.loadCategories(this.selectedProfile);
   }
 
   delete(item: IItem): void {
@@ -221,24 +263,25 @@ export class BookmarksComponent implements OnInit {
   }
 
   test(): void {
+    window.console.log('test check');
     window.console.log(this.selectedCategory);
     window.console.log(this.selectedProfile);
     window.console.log(this.textSearch);
   }
 
   getCategoryQueryParams(): any {
-    if (this.selectedProfile?.id && this.selectedCategory.focusedNodeId) {
+    if (this.selectedProfile?.id && this.selectedCategory?.focusedNodeId) {
       return {
         profile: this.selectedProfile.id.toString(),
-        parentId: this.selectedCategory.focusedNodeId.toString(),
+        parentId: this.selectedCategory?.focusedNodeId.toString(),
       };
     } else if (this.selectedProfile?.id) {
       return {
         profile: this.selectedProfile.id.toString(),
       };
-    } else if (this.selectedCategory.focusedNodeId) {
+    } else if (this.selectedCategory?.focusedNodeId) {
       return {
-        parentId: this.selectedCategory.focusedNodeId.toString(),
+        parentId: this.selectedCategory?.focusedNodeId.toString(),
       };
     } else {
       return {};
@@ -246,9 +289,9 @@ export class BookmarksComponent implements OnInit {
   }
 
   getItemQueryParams(): any {
-    if (this.selectedCategory.focusedNodeId) {
+    if (this.selectedCategory?.focusedNodeId) {
       return {
-        category: this.selectedCategory.focusedNodeId.toString(),
+        category: this.selectedCategory?.focusedNodeId.toString(),
       };
     } else {
       return {};
