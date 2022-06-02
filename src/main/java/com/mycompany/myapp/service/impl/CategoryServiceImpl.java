@@ -5,7 +5,9 @@ import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.repository.CategoryRepository;
 import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +102,17 @@ public class CategoryServiceImpl implements CategoryService {
                     "TODO заменить на нормальное исключение. Найдено более одной корневой категории"
                 );
             }
+        }
+        return result;
+    }
+
+    @Override
+    public Set<Category> getListOfChildren(Category category, Set<Category> result) {
+        if (category == null) return null;
+        result.add(category);
+        findOne(category.getId()).orElseThrow();
+        for (Category c : categoryRepository.findAllByParent(category)) {
+            getListOfChildren(c, result);
         }
         return result;
     }

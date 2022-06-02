@@ -4,6 +4,7 @@ import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.Item;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,14 +31,32 @@ public interface ItemRepository extends ItemRepositoryWithBagRelationships, JpaR
 
     // todo сделать поиск не только по Title но и в Tags и Description
     @Query(
-        "select i from Item i " +
-        "where (:category is null or :category is not null and i.category = :category) " +
-        "and lower(i.title) like lower(concat('%', :searchText,'%'))"
+        nativeQuery = true,
+        value = "select * from bookmark.item i " +
+        "where i.category_id in :categories  " +
+        "and (lower(i.title) like lower(concat('%', :searchText,'%')) " +
+        "or exists(select null from bookmark.tag t join bookmark.rel_item__tag it on t.id = it.tag_id " +
+        "       where it.item_id = i.id and lower(t.tag) like lower(concat('%', :searchText,'%')))) "
     )
-    Page<Item> findByParams(Pageable pageable, @Param("category") Category category, @Param("searchText") String searchText);
+    Page<Item> findByParams(Pageable pageable, @Param("categories") Set<Category> categories, @Param("searchText") String searchText);
 
     // todo сделать поиск не только по Title но и в Tags и Description
-    default Page<Item> findByParamsWithEagerRelationships(Pageable pageable, Category category, String searchText) {
-        return this.fetchBagRelationships(this.findByParams(pageable, category, searchText));
+    @Query(
+        nativeQuery = true,
+        value = "select * from bookmark.item i " +
+        "where lower(i.title) like lower(concat('%', :searchText,'%')) " +
+        "or exists(select null from bookmark.tag t join bookmark.rel_item__tag it on t.id = it.tag_id " +
+        "       where it.item_id = i.id and lower(t.tag) like lower(concat('%', :searchText,'%')))"
+    )
+    Page<Item> findByParams(Pageable pageable, @Param("searchText") String searchText);
+
+    // todo сделать поиск не только по Title но и в Tags и Description
+    default Page<Item> findByParamsWithEagerRelationships(Pageable pageable, Set<Category> categories, String searchText) {
+        return this.fetchBagRelationships(this.findByParams(pageable, categories, searchText));
+    }
+
+    // todo сделать поиск не только по Title но и в Tags и Description
+    default Page<Item> findByParamsWithEagerRelationships(Pageable pageable, String searchText) {
+        return this.fetchBagRelationships(this.findByParams(pageable, searchText));
     }
 }

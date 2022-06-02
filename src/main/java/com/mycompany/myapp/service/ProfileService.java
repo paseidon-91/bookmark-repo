@@ -43,6 +43,14 @@ public interface ProfileService {
     Page<Profile> findAll(Pageable pageable);
 
     /**
+     * Get all the profiles for current user.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<Profile> findAllForCurrentUser(Pageable pageable);
+
+    /**
      * Get the "id" profile.
      *
      * @param id the id of the entity.

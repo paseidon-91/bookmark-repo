@@ -61,6 +61,7 @@ export class BookmarksComponent implements OnInit {
 
     this.profileService
       .query({
+        currentUserOnly: true,
         page: 0,
         size: 99999,
         sort: ['profileName,asc', 'id,asc'],
@@ -119,6 +120,7 @@ export class BookmarksComponent implements OnInit {
           this.items = [];
           if (this.categoriesSharedCollection.length > 0) {
             this.selectedCategory.focusedNodeId = this.categoriesSharedCollection[0].id;
+            this.items = [];
             this.loadFilteredItems();
           }
         }
@@ -249,6 +251,13 @@ export class BookmarksComponent implements OnInit {
     window.console.log('check - profile changed');
     this.categoriesSharedCollection = [];
     this.loadCategories(this.selectedProfile);
+  }
+
+  // todo удалить, заменить на refreshItems()
+  onCategoryChange(): void {
+    window.console.log('check - category changed');
+    this.items = [];
+    this.loadFilteredItems();
   }
 
   delete(item: IItem): void {
