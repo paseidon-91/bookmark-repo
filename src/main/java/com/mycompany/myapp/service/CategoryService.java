@@ -3,6 +3,7 @@ package com.mycompany.myapp.service;
 import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.Profile;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -66,4 +67,6 @@ public interface CategoryService {
     void delete(Long id);
 
     Category getRootCategory(Profile profile);
+
+    Set<Category> getListOfChildren(Category category, Set<Category> result);
 }

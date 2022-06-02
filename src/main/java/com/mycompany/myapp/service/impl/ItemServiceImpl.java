@@ -5,6 +5,7 @@ import com.mycompany.myapp.domain.Item;
 import com.mycompany.myapp.repository.ItemRepository;
 import com.mycompany.myapp.service.ItemService;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -72,9 +73,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<Item> findByParams(Pageable pageable, Category category, String searchText) {
+    public Page<Item> findByParams(Pageable pageable, Set<Category> categories, String searchText) {
         log.debug("Request to get filtered Items collection");
-        return itemRepository.findByParams(pageable, category, searchText);
+        if (categories == null || categories.isEmpty()) {
+            return itemRepository.findByParams(pageable, searchText);
+        } else {
+            return itemRepository.findByParams(pageable, categories, searchText);
+        }
     }
 
     public Page<Item> findAllWithEagerRelationships(Pageable pageable) {
@@ -82,8 +87,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<Item> findByParamsWithEagerRelationships(Pageable pageable, Category category, String searchText) {
-        return itemRepository.findByParamsWithEagerRelationships(pageable, category, searchText);
+    public Page<Item> findByParamsWithEagerRelationships(Pageable pageable, Set<Category> categories, String searchText) {
+        if (categories == null || categories.isEmpty()) {
+            return itemRepository.findByParamsWithEagerRelationships(pageable, searchText);
+        } else {
+            return itemRepository.findByParamsWithEagerRelationships(pageable, categories, searchText);
+        }
     }
 
     @Override

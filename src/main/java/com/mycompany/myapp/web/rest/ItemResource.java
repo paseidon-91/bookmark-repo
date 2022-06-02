@@ -3,13 +3,12 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.Item;
 import com.mycompany.myapp.repository.ItemRepository;
+import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.service.ItemService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.api.annotations.ParameterObject;
@@ -39,11 +38,13 @@ public class ItemResource {
     private String applicationName;
 
     private final ItemService itemService;
+    private final CategoryService categoryService;
 
     private final ItemRepository itemRepository;
 
-    public ItemResource(ItemService itemService, ItemRepository itemRepository) {
+    public ItemResource(ItemService itemService, CategoryService categoryService, ItemRepository itemRepository) {
         this.itemService = itemService;
+        this.categoryService = categoryService;
         this.itemRepository = itemRepository;
     }
 
@@ -174,10 +175,11 @@ public class ItemResource {
     ) {
         log.debug("REST request to get a filtered page of Items");
         Page<Item> page;
+        Set<Category> categories = categoryService.getListOfChildren(category, new HashSet<>());
         if (eagerload) {
-            page = itemService.findByParamsWithEagerRelationships(pageable, category, searchText);
+            page = itemService.findByParamsWithEagerRelationships(pageable, categories, searchText);
         } else {
-            page = itemService.findByParams(pageable, category, searchText);
+            page = itemService.findByParams(pageable, categories, searchText);
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());

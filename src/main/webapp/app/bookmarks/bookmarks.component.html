@@ -49,7 +49,7 @@
           </div>
         </h4>
 
-        <tree-root [nodes]="categoriesSharedCollection" [(state)]="selectedCategory" (stateChange)="loadFilteredItems()"> </tree-root>
+        <tree-root [nodes]="categoriesSharedCollection" [(state)]="selectedCategory" (stateChange)="onCategoryChange()"> </tree-root>
       </div>
 
       <div class="col-9">

@@ -74,12 +74,16 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional(readOnly = true)
     public Page<Profile> findAll(Pageable pageable) {
-        // TODO предварительно проверь роль юзера. Возможно, стоит вернуть лишь профили текущего юзера или все, для админа
-        //  вынести логику с проверкой юзера в отдельный метод
-        final User user = userService.getUserWithAuthorities().orElseThrow(UserNotAuthorizedException::new);
         log.debug("Request to get all Profiles");
-        //        return profileRepository.findAllByUserId(pageable, user.getId());
         return profileRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Profile> findAllForCurrentUser(Pageable pageable) {
+        final User user = userService.getUserWithAuthorities().orElseThrow(UserNotAuthorizedException::new);
+        log.debug("Request to get all Profiles for current user");
+        return profileRepository.findAllByUserId(pageable, user.getId());
     }
 
     @Override

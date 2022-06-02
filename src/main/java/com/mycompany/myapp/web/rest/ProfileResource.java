@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -172,9 +173,17 @@ public class ProfileResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profiles in body.
      */
     @GetMapping("/profiles")
-    public ResponseEntity<List<Profile>> getAllProfiles(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<Profile>> getAllProfiles(
+        @ParameterObject Pageable pageable,
+        @RequestParam(required = false, defaultValue = "false") Boolean currentUserOnly
+    ) {
         log.debug("REST request to get a page of Profiles");
-        Page<Profile> page = profileService.findAll(pageable);
+        Page<Profile> page;
+        if (currentUserOnly) {
+            page = profileService.findAllForCurrentUser(pageable);
+        } else {
+            page = profileService.findAll(pageable);
+        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
