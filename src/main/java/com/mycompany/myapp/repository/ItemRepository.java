@@ -35,7 +35,7 @@ public interface ItemRepository extends ItemRepositoryWithBagRelationships, JpaR
         value = "select * from bookmark.item i " +
         "where i.category_id in :categories  " +
         "and (lower(i.title) like lower(concat('%', :searchText,'%')) " +
-        "or exists(select null from bookmark.tag t join bookmark.rel_item__tag it on t.id = it.tag_id " +
+        "or exists(select null from bookmark.tag t join bookmark.rel_item_tag it on t.id = it.tag_id " +
         "       where it.item_id = i.id and lower(t.tag) like lower(concat('%', :searchText,'%')))) "
     )
     Page<Item> findByParams(Pageable pageable, @Param("categories") Set<Category> categories, @Param("searchText") String searchText);
@@ -45,7 +45,7 @@ public interface ItemRepository extends ItemRepositoryWithBagRelationships, JpaR
         nativeQuery = true,
         value = "select * from bookmark.item i " +
         "where lower(i.title) like lower(concat('%', :searchText,'%')) " +
-        "or exists(select null from bookmark.tag t join bookmark.rel_item__tag it on t.id = it.tag_id " +
+        "or exists(select null from bookmark.tag t join bookmark.rel_item_tag it on t.id = it.tag_id " +
         "       where it.item_id = i.id and lower(t.tag) like lower(concat('%', :searchText,'%')))"
     )
     Page<Item> findByParams(Pageable pageable, @Param("searchText") String searchText);

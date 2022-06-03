@@ -9,13 +9,13 @@
     <changeSet id="20220427214407-2" author="jhipster">
 
         <addForeignKeyConstraint baseColumnNames="item_id"
-                                 baseTableName="rel_item__tag"
+                                 baseTableName="rel_item_tag"
                                  constraintName="fk_rel_item__tag__item_id"
                                  referencedColumnNames="id"
                                  referencedTableName="item"/>
 
         <addForeignKeyConstraint baseColumnNames="tag_id"
-                                 baseTableName="rel_item__tag"
+                                 baseTableName="rel_item_tag"
                                  constraintName="fk_rel_item__tag__tag_id"
                                  referencedColumnNames="id"
                                  referencedTableName="tag"/>

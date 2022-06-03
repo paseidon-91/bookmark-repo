@@ -1,11 +1,24 @@
-id;title;description;type;content
-1;агент Berkshire;лазурный;LINK;Bedfordshire knowledge сенсорный
-2;De-engineered;deposit инженер;FILE;область Йемен proactive
-3;SSL;Венесуэла Большой Электроника;LINK;Маленький withdrawal
-4;багровый сохранить;Кошелек Международный intermediate;LINK;frictionless
-5;пл.;пл.;FILE;Ножницы out-of-the-box Triple-buffered
-6;Портмоне Ботинок;соединение USB;FILE;Кировская Республика
-7;маркетинговый свободно-распростроняемый;Digitized пр. impactful;LINK;Невероятный
-8;content;импортировать;FILE;best-of-breed Down-sized
-9;агент Loan;обойти Distributed;FILE;поглотитель Grass-roots красно-пурпурный
-10;пурпурный;Лесото strategic;FILE;Savings
+id;title;description;type;content;category_id
+1;агент Berkshire;лазурный;LINK;Bedfordshire knowledge сенсорный;1
+2;De-engineered;deposit инженер;FILE;область Йемен proactive;2
+3;SSL;Венесуэла Большой Электроника;LINK;Маленький withdrawal;3
+4;багровый сохранить;Кошелек Международный intermediate;LINK;frictionless;4
+5;пл.;пл.;FILE;Ножницы out-of-the-box Triple-buffered;5
+6;Портмоне Ботинок;соединение USB;FILE;Кировская Республика;6
+7;маркетинговый свободно-распростроняемый;Digitized пр. impactful;LINK;Невероятный;7
+8;content;импортировать;FILE;best-of-breed Down-sized;8
+9;агент Loan;обойти Distributed;FILE;поглотитель Grass-roots красно-пурпурный;9
+10;пурпурный;Лесото strategic;FILE;Savings;10
+11;test;test description;FILE;Savings;11
+12;blue;blue description;FILE;Savings;12
+13;red;red description;FILE;Savings;13
+14;purple;purple description;FILE;Savings;14
+15;black;black description;FILE;Savings;15
+16;brown;brown description;FILE;Savings;16
+17;three;three description;FILE;Savings;1
+18;seven;seven description;FILE;Savings;2
+19;kenny;kenny description;FILE;Savings;3
+20;kartman;kartman description;FILE;Savings;1
+21;Eric;Eric description;FILE;Savings;2
+22;Piter;Piter description;FILE;Savings;2
+23;Harry;Harry description;FILE;Savings;3

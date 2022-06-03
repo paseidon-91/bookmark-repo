@@ -35,7 +35,7 @@
 
     <changeSet id="20220427214407-1-relations" author="jhipster">
 
-        <createTable tableName="rel_item__tag">
+        <createTable tableName="rel_item_tag">
             <column name="tag_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
@@ -44,7 +44,7 @@
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="item_id, tag_id" tableName="rel_item__tag"/>
+        <addPrimaryKey columnNames="item_id, tag_id" tableName="rel_item_tag"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -68,6 +68,7 @@
             <column name="description" type="string"/>
             <column name="type" type="string"/>
             <column name="content" type="string"/>
+            <column name="category_id" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

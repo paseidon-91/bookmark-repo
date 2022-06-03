@@ -52,7 +52,7 @@ public class Item implements Serializable {
     //    }
 
     @ManyToMany
-    @JoinTable(name = "rel_item__tag", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @JoinTable(name = "rel_item_tag", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "tags" }, allowSetters = true)
     private Set<Tag> tags = new HashSet<>();
