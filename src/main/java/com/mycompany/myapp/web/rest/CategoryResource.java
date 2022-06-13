@@ -1,16 +1,21 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.Category;
 import com.mycompany.myapp.domain.Profile;
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.CategoryRepository;
+import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.service.ProfileService;
+import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.api.annotations.ParameterObject;
@@ -42,11 +47,18 @@ public class CategoryResource {
     private final CategoryService categoryService;
     private final ProfileService profileService;
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
 
-    public CategoryResource(CategoryService categoryService, ProfileService profileService, CategoryRepository categoryRepository) {
+    public CategoryResource(
+        CategoryService categoryService,
+        ProfileService profileService,
+        CategoryRepository categoryRepository,
+        UserService userService
+    ) {
         this.categoryService = categoryService;
         this.profileService = profileService;
         this.categoryRepository = categoryRepository;
+        this.userService = userService;
     }
 
     /**
@@ -163,11 +175,18 @@ public class CategoryResource {
         @RequestParam(required = false) Profile profile
     ) {
         log.debug("REST request to get a page of Categories");
-        Page<Category> page = null;
+        Page<Category> page;
         if (profile != null && profile.getId() != null) {
-            page = categoryService.findByProfile(pageable, profile);
+            Set<Profile> profiles = Set.of(profile);
+            page = categoryService.findByProfiles(pageable, profiles);
         } else {
-            page = categoryService.findAll(pageable);
+            User user = userService.getUserWithAuthorities().orElseThrow();
+            if (userService.userIsAdmin(user)) {
+                page = categoryService.findAll(pageable);
+            } else {
+                Set<Profile> profiles = user.getProfiles();
+                page = categoryService.findByProfiles(pageable, profiles);
+            }
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());

@@ -5,7 +5,6 @@ import com.mycompany.myapp.domain.Profile;
 import com.mycompany.myapp.repository.CategoryRepository;
 import com.mycompany.myapp.service.CategoryService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import org.hibernate.Hibernate;
@@ -73,12 +72,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<Category> findByProfile(Pageable pageable, Profile profile) {
-        log.debug("Request to get all Categories for profile");
-        return categoryRepository.findAllByProfile(pageable, profile);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public Optional<Category> findOne(Long id) {
         log.debug("Request to get Category : {}", id);
@@ -92,6 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Category getRootCategory(Profile profile) {
         log.debug("Request to find root category in Profile: {}", profile.getId());
         Category result = null;
@@ -115,5 +109,12 @@ public class CategoryServiceImpl implements CategoryService {
             getListOfChildren(c, result);
         }
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Category> findByProfiles(Pageable pageable, Set<Profile> profiles) {
+        log.debug("Request to get all Categories for profiles");
+        return categoryRepository.findAllByProfileIn(pageable, profiles);
     }
 }

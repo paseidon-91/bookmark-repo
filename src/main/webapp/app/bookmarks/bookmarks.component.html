@@ -150,7 +150,10 @@
                 </td>
                 <td>{{ item.description }}</td>
                 <td jhiTranslate="{{ 'bookmarkApp.ItemType.' + item.type }}">{{ item.type }}</td>
-                <td>{{ item.content }}</td>
+                <td>
+                  <a *ngIf="item.type === 'LINK'" href="{{ item.content }}">{{ item.content }}</a>
+                  <span *ngIf="item.type !== 'LINK'">{{ item.content }}</span>
+                </td>
                 <td>
                   <div *ngIf="item.category">
                     <a [routerLink]="['/category', item.category?.id, 'view']">{{ item.category?.categoryName }}</a>

@@ -11,10 +11,9 @@ import org.springframework.stereotype.Repository;
 /**
  * Spring Data SQL repository for the Category entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Page<Category> findAllByProfile(Pageable pageable, Profile profile);
+    Page<Category> findAllByProfileIn(Pageable pageable, Set<Profile> profiles);
 
     Set<Category> findAllByParent(Category category);
 }

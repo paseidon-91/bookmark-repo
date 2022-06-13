@@ -363,4 +363,8 @@ public class UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
+
+    public boolean userIsAdmin(User user) {
+        return user.getAuthorities().stream().map(Authority::getName).anyMatch(AuthoritiesConstants.ADMIN::equals);
+    }
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Interface for managing {@link Category}.
@@ -44,14 +45,6 @@ public interface CategoryService {
     Page<Category> findAll(Pageable pageable);
 
     /**
-     * Get all the categories for profile.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    Page<Category> findByProfile(Pageable pageable, Profile profile);
-
-    /**
      * Get the "id" category.
      *
      * @param id the id of the entity.
@@ -69,4 +62,12 @@ public interface CategoryService {
     Category getRootCategory(Profile profile);
 
     Set<Category> getListOfChildren(Category category, Set<Category> result);
+
+    /**
+     * Get all the categories for profiles.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<Category> findByProfiles(Pageable pageable, Set<Profile> profiles);
 }

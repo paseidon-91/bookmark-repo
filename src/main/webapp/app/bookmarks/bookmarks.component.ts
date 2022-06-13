@@ -6,7 +6,7 @@ import { ICategory } from '../entities/category/category.model';
 import { IProfile } from '../entities/profile/profile.model';
 
 import { ASC, DESC, ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { CategoryService, EntityArrayResponseType } from '../entities/category/service/category.service';
+import { CategoryService } from '../entities/category/service/category.service';
 import { ParseLinks } from 'app/core/util/parse-links.service';
 import { FormBuilder } from '@angular/forms';
 import { IItem } from '../entities/item/item.model';
@@ -14,7 +14,6 @@ import { ProfileService } from '../entities/profile/service/profile.service';
 import { ItemService } from '../entities/item/service/item.service';
 import { ItemDeleteDialogComponent } from '../entities/item/delete/item-delete-dialog.component';
 import { isPresent } from '../core/util/operators';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'jhi-bookmark',
@@ -116,10 +115,18 @@ export class BookmarksComponent implements OnInit {
           // todo сделать выбор дефолтной категории (1й в списке) правильно
           //  из-за обнуления this.selectedCategory спамится 2 запроса но выделяется нода по дефолту
           //  надо это победить и уйти от костыля
-          this.selectedCategory = {};
-          this.items = [];
+          // this.selectedCategory = {};
           if (this.categoriesSharedCollection.length > 0) {
             this.selectedCategory.focusedNodeId = this.categoriesSharedCollection[0].id;
+
+            // this.selectedCategory.focusedNodeId = {
+            //   expandedNodeIds: this.selectedCategory.expandedNodeIds || {},
+            //   selectedLeafNodeIds: this.selectedCategory.selectedLeafNodeIds || {},
+            //   activeNodeIds: this.selectedCategory.activeNodeIds || {},
+            //   hiddenNodeIds: this.selectedCategory.hiddenNodeIds || {},
+            //   focusedNodeId: this.categoriesSharedCollection[0].id
+            // };
+            // this.tree.treeModel.update();
             this.items = [];
             this.loadFilteredItems();
           }
