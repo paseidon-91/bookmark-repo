@@ -36,7 +36,7 @@ export class ItemRoutingResolveService implements Resolve<IItem> {
               resultItem.category = category.body;
               return of(resultItem);
             } else {
-              //todo как-то иначе обработать бы этот кейс
+              //todo как-то иначе обработать этот кейс
               this.router.navigate(['404']);
               return EMPTY;
             }

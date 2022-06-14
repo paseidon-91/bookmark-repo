@@ -157,7 +157,6 @@ export class BookmarksComponent implements OnInit {
         next: (res: HttpResponse<IItem[]>) => {
           this.isItemsLoading = false;
           this.paginateItems(res.body, res.headers);
-          // todo разворачивать стоит после загрузки категорий, но нужно время на обновление компонента
           this.tree.treeModel.expandAll();
         },
         error: () => {

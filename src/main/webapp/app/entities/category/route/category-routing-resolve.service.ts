@@ -25,7 +25,7 @@ export class CategoryRoutingResolveService implements Resolve<ICategory> {
           category.profile = profile.body;
           return of(category);
         } else {
-          //todo как-то иначе обработать бы этот кейс
+          //todo как-то иначе обработать этот кейс
           this.router.navigate(['404']);
           return EMPTY;
         }
@@ -44,7 +44,7 @@ export class CategoryRoutingResolveService implements Resolve<ICategory> {
             return of(category);
           }
         } else {
-          //todo как-то иначе обработать бы этот кейс
+          //todo как-то иначе обработать этот кейс
           this.router.navigate(['404']);
           return EMPTY;
         }

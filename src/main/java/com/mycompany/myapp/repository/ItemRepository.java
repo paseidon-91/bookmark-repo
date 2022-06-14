@@ -29,7 +29,6 @@ public interface ItemRepository extends ItemRepositoryWithBagRelationships, JpaR
         return this.fetchBagRelationships(this.findAll(pageable));
     }
 
-    // todo сделать поиск не только по Title но и в Tags и Description
     @Query(
         nativeQuery = true,
         value = "select * from bookmark.item i " +
@@ -40,7 +39,6 @@ public interface ItemRepository extends ItemRepositoryWithBagRelationships, JpaR
     )
     Page<Item> findByParams(Pageable pageable, @Param("categories") Set<Category> categories, @Param("searchText") String searchText);
 
-    // todo сделать поиск не только по Title но и в Tags и Description
     @Query(
         nativeQuery = true,
         value = "select * from bookmark.item i " +
@@ -50,12 +48,10 @@ public interface ItemRepository extends ItemRepositoryWithBagRelationships, JpaR
     )
     Page<Item> findByParams(Pageable pageable, @Param("searchText") String searchText);
 
-    // todo сделать поиск не только по Title но и в Tags и Description
     default Page<Item> findByParamsWithEagerRelationships(Pageable pageable, Set<Category> categories, String searchText) {
         return this.fetchBagRelationships(this.findByParams(pageable, categories, searchText));
     }
 
-    // todo сделать поиск не только по Title но и в Tags и Description
     default Page<Item> findByParamsWithEagerRelationships(Pageable pageable, String searchText) {
         return this.fetchBagRelationships(this.findByParams(pageable, searchText));
     }

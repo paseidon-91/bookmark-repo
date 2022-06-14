@@ -38,19 +38,6 @@ public class Item implements Serializable {
     @Column(name = "content")
     private String content;
 
-    // TODO добавить версионирование
-    //    @Version
-    //    @Column(name = "version")
-    //    private int version;
-    //
-    //    public int getVersion() {
-    //        return version;
-    //    }
-    //
-    //    public void setVersion(int version) {
-    //        this.version = version;
-    //    }
-
     @ManyToMany
     @JoinTable(name = "rel_item_tag", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

@@ -39,19 +39,6 @@ public class Profile implements Serializable {
     @Column(name = "is_default")
     private Boolean isDefault;
 
-    // TODO добавить версионирование
-    //    @Version
-    //    @Column(name = "version")
-    //    private int version;
-    //
-    //    public int getVersion() {
-    //        return version;
-    //    }
-    //
-    //    public void setVersion(int version) {
-    //        this.version = version;
-    //    }
-
     @OneToMany(mappedBy = "profile")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "items", "parent", "profile" }, allowSetters = true)
@@ -60,8 +47,6 @@ public class Profile implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties(value = { "profiles", "authorities", "persistentTokens" }, allowSetters = true)
     private User user;
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
         return this.id;
@@ -145,8 +130,6 @@ public class Profile implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {

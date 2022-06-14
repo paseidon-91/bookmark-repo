@@ -143,30 +143,6 @@ export class CategoryService {
   }
 
   protected deepSort(arr: any[]): void {
-    /*    function compareIds(a: ICategory, b: ICategory): number {
-      // todo В идеале алгоритм должен быть такой:
-      // проверить id и parent.id
-      if (!isPresent(a.id) && !isPresent(b.id)) {
-        return 0;
-      }
-      if (!isPresent(b.parent) && isPresent(a.parent)) {
-        return 1
-      }
-      if (!isPresent(a.parent) && isPresent(b.parent)) {
-        return -1
-      }
-      if (isPresent(a.id) && isPresent(b.id)) {
-        // if (isPresent(b.parent) && isPresent(b.parent.id) && b.parent.id === a.id) {
-        //   window.console.log("ch1")
-        //   return 1;
-        // } else if (isPresent(a.parent) && isPresent(a.parent.id) && a.parent.id === b.id) {
-        //   window.console.log("ch2")
-        //   return -1;
-        // }
-        return a.id - b.id;
-      }
-      return isPresent(a.id) ? 1 : -1;
-    }*/
     function compareNames(a: any, b: any): number {
       return a.name.toUpperCase() === b.name.toUpperCase() ? 0 : a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1;
     }

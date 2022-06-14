@@ -107,13 +107,12 @@ public class ProfileResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        // TODO унести в сервис
         User user = userService.findById(profile.getUser().getId()).orElseThrow();
         Profile oldDefault = profileService.getDefaultProfile(user);
         if (profile.getIsDefault() && !id.equals(oldDefault.getId())) {
             profileService.changeDefaultProfile(profile);
         } else if (!profile.getIsDefault()) {
-            throw new RuntimeException("TODO заменить на нормальное исключение. Должен быть хотя бы один профиль по умолчанию");
+            throw new RuntimeException("Должен быть хотя бы один профиль по умолчанию");
         }
 
         Profile result = profileService.update(profile);
@@ -150,12 +149,12 @@ public class ProfileResource {
         if (!profileRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        // TODO унести в сервис
+
         Profile oldDefault = profileService.getDefaultProfile(profile.getUser());
         if (profile.getIsDefault() && !id.equals(oldDefault.getId())) {
             profileService.changeDefaultProfile(profile);
         } else if (!profile.getIsDefault()) {
-            throw new RuntimeException("TODO заменить на нормальное исключение. Должен быть хотя бы один профиль по умолчанию");
+            throw new RuntimeException("Должен быть хотя бы один профиль по умолчанию");
         }
 
         Optional<Profile> result = profileService.partialUpdate(profile);

@@ -92,9 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
         Hibernate.initialize(profile);
         for (Category category : profile.getCategories()) {
             if (category.getParent() == null) {
-                if (result == null) result = category; else throw new RuntimeException(
-                    "TODO заменить на нормальное исключение. Найдено более одной корневой категории"
-                );
+                if (result == null) result = category; else throw new RuntimeException("Найдено более одной корневой категории");
             }
         }
         return result;

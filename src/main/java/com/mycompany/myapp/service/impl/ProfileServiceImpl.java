@@ -121,12 +121,10 @@ public class ProfileServiceImpl implements ProfileService {
         Profile result = null;
         for (Profile profile : user.getProfiles()) {
             if (profile.getIsDefault()) {
-                if (result == null) result = profile; else throw new RuntimeException(
-                    "TODO заменить на нормальное исключение. Найдено более одного профиля по умолчанию"
-                );
+                if (result == null) result = profile; else throw new RuntimeException("Найдено более одного профиля по умолчанию");
             }
         }
-        if (result == null) throw new RuntimeException("TODO заменить на нормальное исключение. Не найдено ни одного профиля по умолчанию");
+        if (result == null) throw new RuntimeException("Не найдено ни одного профиля по умолчанию");
         return result;
     }
 }
