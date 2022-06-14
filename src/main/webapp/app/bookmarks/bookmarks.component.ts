@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -35,6 +35,12 @@ export class BookmarksComponent implements OnInit {
   page: number;
   predicate: string;
   ascending: boolean;
+
+  @ViewChild('tree') tree: any;
+  loadedParams = {
+    textSearch: '',
+    category: null,
+  };
 
   constructor(
     protected categoryService: CategoryService,
@@ -112,23 +118,12 @@ export class BookmarksComponent implements OnInit {
           this.categoriesSharedCollection = this.categoryService.convertAll(
             this.categoryService.parseCategoryToTree(this.categoriesSharedCollection)
           );
-          // todo сделать выбор дефолтной категории (1й в списке) правильно
-          //  из-за обнуления this.selectedCategory спамится 2 запроса но выделяется нода по дефолту
-          //  надо это победить и уйти от костыля
-          // this.selectedCategory = {};
           if (this.categoriesSharedCollection.length > 0) {
-            this.selectedCategory.focusedNodeId = this.categoriesSharedCollection[0].id;
+            // this.selectedCategory.focusedNodeId = this.categoriesSharedCollection[0].id;
+            this.tree.treeModel.focusedNodeId = this.categoriesSharedCollection[0].id;
 
-            // this.selectedCategory.focusedNodeId = {
-            //   expandedNodeIds: this.selectedCategory.expandedNodeIds || {},
-            //   selectedLeafNodeIds: this.selectedCategory.selectedLeafNodeIds || {},
-            //   activeNodeIds: this.selectedCategory.activeNodeIds || {},
-            //   hiddenNodeIds: this.selectedCategory.hiddenNodeIds || {},
-            //   focusedNodeId: this.categoriesSharedCollection[0].id
-            // };
-            // this.tree.treeModel.update();
-            this.items = [];
-            this.loadFilteredItems();
+            // this.items = [];
+            // this.loadFilteredItems();
           }
         }
       },
@@ -138,45 +133,11 @@ export class BookmarksComponent implements OnInit {
     });
   }
 
-  // loadItems(category: any): void {
-  //   this.isItemsLoading = true;
-  //   let body;
-  //   if (category?.focusedNodeId) {
-  //     body = {
-  //       page: 0,
-  //       size: 99999,
-  //       sort: ['categoryName,asc', 'id,asc'],
-  //       category: category.focusedNodeId,
-  //     };
-  //   } else {
-  //     body = {
-  //       page: 0,
-  //       size: 99999,
-  //       sort: ['categoryName,asc', 'id,asc'],
-  //     };
-  //   }
-  //
-  //   this.itemService
-  //     .query({
-  //       page: this.page,
-  //       size: this.itemsPerPage,
-  //       // sort: this.sort('title'),
-  //       sort: this.sort(),
-  //     })
-  //     .subscribe({
-  //       next: (res: HttpResponse<IItem[]>) => {
-  //         this.isItemsLoading = false;
-  //         this.paginateItems(res.body, res.headers);
-  //       },
-  //       error: () => {
-  //         this.isItemsLoading = false;
-  //       },
-  //     });
-  // }
-
   loadFilteredItems(): void {
     this.test();
     window.console.log('check - loadFilteredItems');
+    this.loadedParams.category = this.selectedCategory.focusedNodeId;
+    this.loadedParams.textSearch = this.textSearch;
     this.isItemsLoading = true;
 
     this.itemService
@@ -196,6 +157,8 @@ export class BookmarksComponent implements OnInit {
         next: (res: HttpResponse<IItem[]>) => {
           this.isItemsLoading = false;
           this.paginateItems(res.body, res.headers);
+          // todo разворачивать стоит после загрузки категорий, но нужно время на обновление компонента
+          this.tree.treeModel.expandAll();
         },
         error: () => {
           this.isItemsLoading = false;
@@ -236,8 +199,6 @@ export class BookmarksComponent implements OnInit {
   ngOnInit(): void {
     window.console.log('check - init');
     this.loadProfiles();
-    // this.loadCategories(this.selectedProfile);
-    // this.loadItems(this.selectedCategory);
   }
 
   trackProfileById(_index: number, item: IProfile): number {
@@ -262,9 +223,13 @@ export class BookmarksComponent implements OnInit {
 
   // todo удалить, заменить на refreshItems()
   onCategoryChange(): void {
-    window.console.log('check - category changed');
-    this.items = [];
-    this.loadFilteredItems();
+    if (this.loadedParams.category !== this.selectedCategory.focusedNodeId || this.loadedParams.textSearch !== this.textSearch) {
+      window.console.log('check - category changed');
+      this.items = [];
+      this.loadFilteredItems();
+    } else {
+      window.console.log('check - category changed skip!!!!!');
+    }
   }
 
   delete(item: IItem): void {
@@ -280,9 +245,13 @@ export class BookmarksComponent implements OnInit {
 
   test(): void {
     window.console.log('test check');
-    window.console.log(this.selectedCategory);
-    window.console.log(this.selectedProfile);
-    window.console.log(this.textSearch);
+    window.console.log(`selectedCategory = `, this.selectedCategory.focusedNodeId);
+    window.console.log(`selectedProfile = `, this.selectedProfile?.profileName);
+    window.console.log(`textSearch = `, this.textSearch);
+  }
+
+  expandAll(): void {
+    this.tree.treeModel.expandAll();
   }
 
   getCategoryQueryParams(): any {

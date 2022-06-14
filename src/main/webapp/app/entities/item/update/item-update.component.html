@@ -33,7 +33,6 @@
         <div class="row mb-3">
           <label class="form-label" jhiTranslate="bookmarkApp.item.type" for="field_type">Type</label>
           <select class="form-control" name="type" formControlName="type" id="field_type" data-cy="type">
-            <option [ngValue]="null">{{ 'bookmarkApp.ItemType.null' | translate }}</option>
             <option *ngFor="let itemType of itemTypeValues" [value]="itemType">{{ 'bookmarkApp.ItemType.' + itemType | translate }}</option>
           </select>
         </div>
