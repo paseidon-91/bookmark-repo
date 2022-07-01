@@ -14,6 +14,7 @@ import { ProfileService } from '../entities/profile/service/profile.service';
 import { ItemService } from '../entities/item/service/item.service';
 import { ItemDeleteDialogComponent } from '../entities/item/delete/item-delete-dialog.component';
 import { isPresent } from '../core/util/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'jhi-bookmark',
@@ -48,7 +49,8 @@ export class BookmarksComponent implements OnInit {
     protected itemService: ItemService,
     protected modalService: NgbModal,
     protected parseLinks: ParseLinks,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    private router: Router
   ) {
     this.itemsPerPage = ITEMS_PER_PAGE;
     this.page = 0;
@@ -250,8 +252,8 @@ export class BookmarksComponent implements OnInit {
     window.console.log(`textSearch = `, this.textSearch);
   }
 
-  expandAll(): void {
-    this.tree.treeModel.expandAll();
+  login(): void {
+    this.router.navigate(['/login']);
   }
 
   getCategoryQueryParams(): any {
